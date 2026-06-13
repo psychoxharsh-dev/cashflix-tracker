@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Refer & Earn - CashFlix ⚡</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Nunito',sans-serif; background:#f0f4ff; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+.card { background:#fff; border-radius:24px; padding:24px; max-width:420px; width:100%; box-shadow:0 8px 32px rgba(0,0,0,0.10); border-top:4px solid #0d47a1; }
+.header { display:flex; align-items:center; gap:14px; margin-bottom:20px; }
+.app-icon { width:64px; height:64px; border-radius:16px; background:linear-gradient(135deg,#0d47a1,#1565c0); display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; }
+.header-text h1 { font-size:22px; font-weight:900; color:#1a1a2e; }
+.header-text p { font-size:13px; color:#888; font-weight:600; }
+.form-label { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:800; color:#1a1a2e; margin-bottom:10px; }
+.upi-input { width:100%; padding:14px 18px; border:2px solid #e8ecf4; border-radius:14px; font-size:15px; font-family:'Nunito',sans-serif; font-weight:700; color:#1a1a2e; outline:none; transition:border-color 0.2s; background:#f8f9ff; }
+.upi-input:focus { border-color:#0d47a1; background:#fff; }
+.upi-input::placeholder { color:#bbb; font-weight:600; }
+.submit-btn { width:100%; padding:16px; background:linear-gradient(135deg,#0d47a1,#1565c0); color:#fff; border:none; border-radius:14px; font-size:16px; font-weight:900; font-family:'Nunito',sans-serif; cursor:pointer; letter-spacing:1px; transition:all 0.2s; box-shadow:0 4px 16px rgba(13,71,161,0.4); margin-top:12px; }
+.submit-btn:hover { transform:translateY(-2px); }
+.submit-btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
+.copy-btn { width:100%; padding:16px; background:#fff; color:#0d47a1; border:2px solid #0d47a1; border-radius:14px; font-size:16px; font-weight:900; font-family:'Nunito',sans-serif; cursor:pointer; letter-spacing:1px; margin-top:10px; }
+.error-msg { color:#e53935; font-size:13px; font-weight:700; margin-top:8px; display:none; }
+.divider { height:1px; background:#f0f0f0; margin:20px 0; }
+.powered { text-align:center; margin-top:20px; font-size:12px; color:#bbb; font-weight:700; }
+.powered span { color:#0d47a1; }
+.link-box { background:#f8f9ff; border:2px solid #e8ecf4; border-radius:14px; padding:14px 18px; font-size:13px; font-weight:700; color:#333; word-break:break-all; margin-top:12px; }
+.offer-select { width:100%; padding:14px 18px; border:2px solid #e8ecf4; border-radius:14px; font-size:15px; font-family:'Nunito',sans-serif; font-weight:700; color:#1a1a2e; outline:none; background:#f8f9ff; margin-bottom:16px; cursor:pointer; }
+.payout-box { background:#f0f4ff; border-radius:14px; padding:16px; margin-bottom:16px; }
+.payout-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.payout-row:last-child { margin-bottom:0; }
+.payout-label { font-size:14px; font-weight:800; color:#1a1a2e; }
+.payout-input { width:80px; padding:8px 12px; border:2px solid #0d47a1; border-radius:10px; font-size:15px; font-family:'Nunito',sans-serif; font-weight:700; color:#0d47a1; outline:none; text-align:center; background:#fff; }
+.total-row { display:flex; justify-content:space-between; background:#0d47a1; border-radius:10px; padding:12px 16px; margin-top:10px; }
+.total-label { font-size:14px; font-weight:800; color:#fff; }
+.total-val { font-size:14px; font-weight:900; color:#fff; }
+.offer-badge { background:#e3f2fd; color:#0d47a1; padding:6px 16px; border-radius:20px; font-size:13px; font-weight:800; display:inline-block; margin-bottom:16px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="app-icon">🔗</div>
+    <div class="header-text">
+      <h1>Refer & Earn</h1>
+      <p>Generate your refer link</p>
+    </div>
+  </div>
+
+  <div id="formScreen">
+    <div class="form-label">🎁 Select Offer</div>
+    <!-- ✅ Offer auto select hoga URL se -->
+    <div id="offerBadge" class="offer-badge" style="display:none;"></div>
+    <select class="offer-select" id="offerSelect" onchange="updateOffer()">
+      <option value="Coinswitch" data-amount="200">Coinswitch - ₹200</option>
+      <!-- Naye offers yahan add karo -->
+    </select>
+
+    <div class="form-label"><span>💳</span> Your UPI ID</div>
+    <input type="text" class="upi-input" id="upiInput" placeholder="Enter your UPI ID (e.g. name@upi)">
+    <div class="error-msg" id="errorMsg">⚠️ Please enter a valid UPI ID!</div>
+
+    <div class="divider"></div>
+
+    <div class="form-label">💰 Custom Payout</div>
+    <div class="payout-box">
+      <div class="payout-row">
+        <span class="payout-label">👤 User Gets</span>
+        <input type="number" class="payout-input" id="userPayout" value="100" onchange="updateMyPayout()">
+      </div>
+      <div class="payout-row">
+        <span class="payout-label">🤲 You Get</span>
+        <input type="number" class="payout-input" id="myPayout" value="100" onchange="updateUserPayout()">
+      </div>
+      <div class="total-row">
+        <span class="total-label">Total Payout</span>
+        <span class="total-val" id="totalPayout">₹200</span>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="generateLink()">GENERATE LINK</button>
+  </div>
+
+  <div id="resultScreen" style="display:none;">
+    <div class="divider"></div>
+    <div class="form-label">🔗 Your Refer Link</div>
+    <div class="link-box" id="linkBox"></div>
+    <button class="submit-btn" onclick="copyLink()">📋 Copy Link</button>
+    <button class="copy-btn" onclick="resetForm()">Generate New Link</button>
+  </div>
+
+  <div class="powered">Powered by <span>CashFlix ⚡</span></div>
+</div>
+
+<script>
+const SERVER = 'https://cashflix-upi.onrender.com';
+let totalAmt = 200;
+let generatedLink = '';
+
+// ✅ URL se offer auto select
+window.addEventListener('load', function() {
+  const path = window.location.pathname;
+  const parts = path.split('/');
+  const offerFromUrl = parts[parts.length - 1];
+
+  if (offerFromUrl && offerFromUrl !== 'Refer') {
+    const select = document.getElementById('offerSelect');
+    let found = false;
+    for (let i = 0; i < select.options.length; i++) {
+      if (select.options[i].value.toLowerCase() === offerFromUrl.toLowerCase()) {
+        select.value = select.options[i].value;
+        found = true;
+        break;
+      }
+    }
+    if (found) {
+      updateOffer();
+      // Badge dikhao
+      const badge = document.getElementById('offerBadge');
+      badge.innerText = `🎁 ${select.value}`;
+      badge.style.display = 'inline-block';
+      select.style.display = 'none';
+    }
+  }
+});
+
+function updateOffer() {
+  const select = document.getElementById('offerSelect');
+  const option = select.options[select.selectedIndex];
+  totalAmt = parseInt(option.getAttribute('data-amount'));
+  document.getElementById('totalPayout').innerText = `₹${totalAmt}`;
+  document.getElementById('userPayout').value = Math.floor(totalAmt / 2);
+  document.getElementById('myPayout').value = totalAmt - Math.floor(totalAmt / 2);
+}
+
+function updateMyPayout() {
+  const user = Math.min(parseInt(document.getElementById('userPayout').value) || 0, totalAmt);
+  document.getElementById('userPayout').value = user;
+  document.getElementById('myPayout').value = totalAmt - user;
+}
+
+function updateUserPayout() {
+  const my = Math.min(parseInt(document.getElementById('myPayout').value) || 0, totalAmt);
+  document.getElementById('myPayout').value = my;
+  document.getElementById('userPayout').value = totalAmt - my;
+}
+
+async function generateLink() {
+  const upi = document.getElementById('upiInput').value.trim();
+  const errorMsg = document.getElementById('errorMsg');
+  const submitBtn = document.getElementById('submitBtn');
+
+  if (!upi || !upi.includes('@')) {
+    errorMsg.style.display = 'block';
+    return;
+  }
+
+  errorMsg.style.display = 'none';
+  submitBtn.innerText = 'Generating...';
+  submitBtn.disabled = true;
+
+  const offerId = document.getElementById('offerSelect').value;
+  const userPayout = parseInt(document.getElementById('userPayout').value) || 0;
+  const myPayout = parseInt(document.getElementById('myPayout').value) || 0;
+
+  try {
+    const res = await fetch(`${SERVER}/refer/create`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        offer_id: offerId,
+        offer_name: offerId,
+        referrer_upi: upi,
+        user_payout: userPayout,
+        my_payout: myPayout
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      generatedLink = `${data.landing_url}?source=${data.code}`;
+      document.getElementById('linkBox').innerText = generatedLink;
+      document.getElementById('formScreen').style.display = 'none';
+      document.getElementById('resultScreen').style.display = 'block';
+    } else {
+      errorMsg.innerText = '⚠️ Error! Try again.';
+      errorMsg.style.display = 'block';
+    }
+  } catch(e) {
+    errorMsg.innerText = '⚠️ Error! Try again.';
+    errorMsg.style.display = 'block';
+  }
+
+  submitBtn.innerText = 'GENERATE LINK';
+  submitBtn.disabled = false;
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(generatedLink).then(() => {
+    alert('Link copied! 🎉');
+  });
+}
+
+function resetForm() {
+  document.getElementById('formScreen').style.display = 'block';
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('upiInput').value = '';
+  generatedLink = '';
+}
+
+document.getElementById('upiInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') generateLink();
+});
+</script>
+</body>
+</html>
