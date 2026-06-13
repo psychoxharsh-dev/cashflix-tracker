@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/Tracker/User/:offer", "destination": "/tracker.html" },
+    { "source": "/Refer/:offer", "destination": "/refer.html" }
+  ]
+}
