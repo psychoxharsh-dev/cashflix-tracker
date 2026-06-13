@@ -3,88 +3,120 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Track Status - CashFlix ⚡</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<title>Lead Tracker - CashFlix ⚡</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Nunito',sans-serif; background:#f0f4ff; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
-.card { background:#fff; border-radius:24px; padding:24px; max-width:420px; width:100%; box-shadow:0 8px 32px rgba(0,0,0,0.10); border-top:4px solid #0d47a1; }
-.header { display:flex; align-items:center; gap:14px; margin-bottom:20px; }
-.app-icon { width:64px; height:64px; border-radius:16px; background:linear-gradient(135deg,#0d47a1,#1565c0); display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; }
-.header-text h1 { font-size:22px; font-weight:900; color:#1a1a2e; }
-.header-text p { font-size:13px; color:#888; font-weight:600; }
-.form-label { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:800; color:#1a1a2e; margin-bottom:10px; }
-.upi-input { width:100%; padding:14px 18px; border:2px solid #e8ecf4; border-radius:14px; font-size:15px; font-family:'Nunito',sans-serif; font-weight:700; color:#1a1a2e; outline:none; transition:border-color 0.2s; background:#f8f9ff; }
-.upi-input:focus { border-color:#0d47a1; background:#fff; }
-.upi-input::placeholder { color:#bbb; font-weight:600; }
-.submit-btn { width:100%; padding:16px; background:linear-gradient(135deg,#0d47a1,#1565c0); color:#fff; border:none; border-radius:14px; font-size:16px; font-weight:900; font-family:'Nunito',sans-serif; cursor:pointer; letter-spacing:1px; transition:all 0.2s; box-shadow:0 4px 16px rgba(13,71,161,0.4); margin-top:12px; }
-.submit-btn:hover { transform:translateY(-2px); }
-.submit-btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
-.error-msg { color:#e53935; font-size:13px; font-weight:700; margin-top:8px; display:none; }
-.divider { height:1px; background:#f0f0f0; margin:20px 0; }
-.powered { text-align:center; margin-top:20px; font-size:12px; color:#bbb; font-weight:700; }
-.powered span { color:#0d47a1; }
-.balance-box { background:linear-gradient(135deg,#0d47a1,#1565c0); border-radius:18px; padding:20px; margin-bottom:20px; position:relative; overflow:hidden; }
-.balance-box::after { content:''; position:absolute; right:-20px; top:-20px; width:120px; height:120px; background:rgba(255,255,255,0.08); border-radius:50%; }
-.balance-label { font-size:11px; font-weight:800; color:rgba(255,255,255,0.8); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px; }
-.balance-amount { font-size:48px; font-weight:900; color:#fff; line-height:1; margin-bottom:8px; }
-.balance-amount span { font-size:28px; }
-.balance-upi { font-size:13px; color:rgba(255,255,255,0.8); font-weight:700; }
-.section-title { font-size:15px; font-weight:800; color:#1a1a2e; margin-bottom:12px; }
-.conversion-item { background:#f8f9ff; border-radius:14px; margin-bottom:10px; overflow:hidden; border:1px solid #e8ecf4; }
-.conversion-row { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid #e8ecf4; }
-.conversion-row:last-child { border-bottom:none; }
-.row-label { font-size:13px; font-weight:800; color:#1a1a2e; }
-.row-val { font-size:13px; font-weight:700; color:#555; }
-.badge { padding:4px 12px; border-radius:20px; font-size:11px; font-weight:800; }
-.badge-paid { background:#e8f5e9; color:#2e7d32; }
-.badge-tracked { background:#e3f2fd; color:#0d47a1; }
-.badge-pending { background:#fff3e0; color:#f57c00; }
-.no-data { text-align:center; padding:20px; color:#888; font-size:14px; font-weight:700; }
-.spinner { display:none; text-align:center; padding:20px; }
-.spinner-icon { width:40px; height:40px; border:4px solid #e8ecf4; border-top:4px solid #0d47a1; border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto; }
-@keyframes spin { to{transform:rotate(360deg)} }
-.result { display:none; }
+body { font-family:'Inter',sans-serif; background:#111827; min-height:100vh; display:flex; justify-content:center; align-items:flex-start; padding:24px 0 40px; }
+.wrap { width:100%; max-width:420px; margin:0 16px; }
+.main-box { background:#e8eaf0; border-radius:28px; overflow:hidden; box-shadow:0 24px 64px rgba(0,0,0,.6); }
+.logo-wrap { display:flex; justify-content:center; padding-top:40px; padding-bottom:14px; }
+.logo-outer { width:80px; height:80px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 16px rgba(0,0,0,.13); }
+.logo-inner { width:58px; height:58px; border-radius:14px; background:linear-gradient(135deg,#1a1a2e,#16213e); display:flex; align-items:center; justify-content:center; }
+.title-wrap { text-align:center; padding:0 24px 24px; }
+.title { font-weight:900; font-size:30px; color:#0f172a; letter-spacing:-0.5px; }
+.subtitle { font-weight:400; font-size:16px; color:#94a3b8; margin-top:6px; }
+.form-wrap { padding:0 20px 32px; display:flex; flex-direction:column; gap:14px; }
+.pill { background:#fff; border-radius:50px; padding:0 16px; display:flex; align-items:center; gap:12px; height:56px; box-shadow:0 2px 12px rgba(0,0,0,.08); border:2px solid transparent; transition:border .2s; }
+.pill.focused { border-color:#3b6fd4; }
+.pill input { flex:1; border:none; outline:none; font-size:15px; font-weight:500; color:#374151; background:transparent; font-family:'Inter',sans-serif; }
+.date-pill { background:#fff; border-radius:50px; padding:0 16px; display:flex; align-items:center; gap:8px; height:56px; box-shadow:0 2px 12px rgba(0,0,0,.08); border:2px solid #3b6fd4; }
+.date-pill input[type="date"] { flex:1; border:none; outline:none; font-size:13px; font-weight:700; color:#1e293b; background:transparent; font-family:'Inter',sans-serif; min-width:0; cursor:pointer; }
+.date-sep { color:#94a3b8; font-weight:600; font-size:13px; flex-shrink:0; }
+.select-box { height:50px; border-radius:50px; border:none; background:#fff; font-size:14px; font-weight:600; color:#1e293b; outline:none; box-shadow:0 2px 10px rgba(0,0,0,.08); font-family:'Inter',sans-serif; cursor:pointer; padding-left:18px; }
+.track-btn { height:54px; border-radius:50px; background:linear-gradient(180deg,#4580e6,#2952c4); color:#fff; font-weight:800; font-size:17px; border:none; cursor:pointer; letter-spacing:.5px; box-shadow:0 4px 24px rgba(41,82,196,.45); font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:12px; }
+.track-btn:disabled { opacity:.7; cursor:not-allowed; }
+.search-pill { background:#fff; border-radius:50px; padding:0 16px; display:flex; align-items:center; gap:12px; height:56px; box-shadow:0 2px 12px rgba(0,0,0,.08); border:2px solid transparent; transition:border .2s; margin-bottom:14px; }
+.search-pill.focused { border-color:#3b6fd4; }
+.search-pill input { flex:1; border:none; outline:none; font-size:14px; font-weight:500; color:#374151; background:transparent; font-family:'Inter',sans-serif; }
+.result-card { background:#e8eaf0; border-radius:20px; overflow:hidden; margin-bottom:14px; box-shadow:0 8px 32px rgba(0,0,0,.3); }
+.result-row { display:flex; justify-content:space-between; align-items:center; padding:15px 22px; border-bottom:1px solid #d1d5db; }
+.result-row:last-child { border-bottom:none; }
+.row-label { font-weight:800; font-size:14px; color:#0f172a; }
+.row-val { font-weight:600; font-size:14px; color:#374151; }
+.badge { color:#fff; padding:5px 16px; border-radius:8px; font-weight:700; font-size:13px; }
+.no-result { background:#e8eaf0; border-radius:20px; padding:36px 24px; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,.3); }
+.no-result-title { font-weight:700; font-size:16px; color:#374151; margin-bottom:6px; }
+.no-result-sub { color:#94a3b8; font-size:13px; }
+.back-btn { width:100%; height:54px; border-radius:50px; background:linear-gradient(180deg,#4580e6,#2952c4); color:#fff; font-weight:800; font-size:16px; border:none; cursor:pointer; letter-spacing:.5px; box-shadow:0 4px 24px rgba(41,82,196,.45); font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:12px; }
+.toast { position:fixed; bottom:32px; left:50%; transform:translateX(-50%); color:#fff; padding:13px 30px; border-radius:50px; font-weight:700; font-size:13px; z-index:9999; box-shadow:0 4px 24px rgba(0,0,0,.3); white-space:nowrap; font-family:'Inter',sans-serif; display:none; }
 </style>
 </head>
 <body>
-<div class="card">
-  <div class="header">
-    <div class="app-icon">⚡</div>
-    <div class="header-text">
-      <h1>Lead Tracker</h1>
-      <p>Check your cashback status</p>
+<div class="wrap">
+
+  <!-- Main Card -->
+  <div class="main-box" id="mainBox">
+    <div class="logo-wrap">
+      <div class="logo-outer">
+        <div class="logo-inner">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+            <circle cx="14" cy="12" r="5" stroke="#7c6fcd" stroke-width="2.5"/>
+            <circle cx="24" cy="26" r="5" stroke="#b06ab3" stroke-width="2.5"/>
+            <line x1="14" y1="17" x2="24" y2="21" stroke="#7c6fcd" stroke-width="2" stroke-dasharray="2 2"/>
+            <circle cx="14" cy="12" r="2" fill="#7c6fcd"/>
+            <circle cx="24" cy="26" r="2" fill="#b06ab3"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="title-wrap">
+      <div class="title">Lead Tracker</div>
+      <div class="subtitle" id="offerSubtitle">Coinswitch</div>
+    </div>
+    <div class="form-wrap">
+      <select class="select-box" id="offerSelect" onchange="updateSubtitle()">
+        <option value="Coinswitch">Coinswitch</option>
+      </select>
+      <div class="pill" id="upiPill">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M8 10v11M12 10v11M16 10v11M20 10v11" stroke="#2952c4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <input type="text" id="upiInput" placeholder="Enter UPI ID"
+          onfocus="document.getElementById('upiPill').classList.add('focused')"
+          onblur="document.getElementById('upiPill').classList.remove('focused')"
+          onkeypress="if(event.key==='Enter') trackNow()"/>
+      </div>
+      <div class="date-pill">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="3" stroke="#2952c4" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#2952c4" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="15" r="1.2" fill="#2952c4"/><circle cx="12" cy="15" r="1.2" fill="#2952c4"/><circle cx="16" cy="15" r="1.2" fill="#2952c4"/></svg>
+        <input type="date" id="fromDate"/>
+        <span class="date-sep">to</span>
+        <input type="date" id="toDate" style="text-align:right;"/>
+      </div>
+      <button class="track-btn" id="trackBtn" onclick="trackNow()">
+        <span>Track Now</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
     </div>
   </div>
 
-  <div id="searchForm">
-    <div class="form-label"><span>💳</span> Enter Your UPI ID</div>
-    <input type="text" class="upi-input" id="upiInput" placeholder="example@upi" />
-    <div class="error-msg" id="errorMsg">⚠️ Please enter a valid UPI ID!</div>
-    <button class="submit-btn" id="searchBtn" onclick="searchStatus()">TRACK NOW</button>
-  </div>
-
-  <div class="spinner" id="spinner">
-    <div class="spinner-icon"></div>
-  </div>
-
-  <div class="result" id="result">
-    <div class="divider"></div>
-    <div class="balance-box">
-      <div class="balance-label">TOTAL EARNINGS</div>
-      <div class="balance-amount"><span>₹</span><span id="totalEarnings">0</span></div>
-      <div class="balance-upi" id="maskedUpi"></div>
+  <!-- Results -->
+  <div id="resultsWrap" style="display:none; margin-top:18px;">
+    <div class="search-pill" id="searchPill">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#94a3b8" stroke-width="2.2"/><path d="M20 20l-3-3" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <input type="text" id="searchInput" placeholder="Search..."
+        onfocus="document.getElementById('searchPill').classList.add('focused')"
+        onblur="document.getElementById('searchPill').classList.remove('focused')"
+        oninput="filterResults()"/>
     </div>
-    <div class="section-title">📋 Conversions</div>
-    <div id="conversionsList"></div>
-    <button class="submit-btn" onclick="resetForm()" style="margin-top:10px;">🔍 Search Again</button>
+    <div id="resultsList"></div>
+    <button class="back-btn" onclick="resetForm()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 6l-6 6 6 6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Search Again
+    </button>
   </div>
 
-  <div class="powered">Powered by <span>CashFlix ⚡</span></div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 const SERVER = 'https://cashflix-upi.onrender.com';
+let allResults = [];
+
+// ✅ Date set karo today
+const today = new Date();
+const todayStr = today.toISOString().slice(0, 10);
+document.getElementById('fromDate').value = todayStr;
+document.getElementById('toDate').value = todayStr;
 
 // ✅ URL se UPI auto fill
 window.addEventListener('load', function() {
@@ -93,85 +125,114 @@ window.addEventListener('load', function() {
   const upiFromUrl = decodeURIComponent(parts[parts.length - 1]);
   if (upiFromUrl && upiFromUrl.includes('@')) {
     document.getElementById('upiInput').value = upiFromUrl;
-    searchStatus();
+    trackNow();
   }
 });
 
-async function searchStatus() {
+function updateSubtitle() {
+  document.getElementById('offerSubtitle').innerText = document.getElementById('offerSelect').value;
+}
+
+function showToast(msg, ok=true) {
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.background = ok ? '#22c55e' : '#ef4444';
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2500);
+}
+
+async function trackNow() {
   const upi = document.getElementById('upiInput').value.trim();
-  const errorMsg = document.getElementById('errorMsg');
-  const searchBtn = document.getElementById('searchBtn');
+  const offer = document.getElementById('offerSelect').value;
+  const fromDate = document.getElementById('fromDate').value;
+  const toDate = document.getElementById('toDate').value;
+  const btn = document.getElementById('trackBtn');
 
-  if (!upi || !upi.includes('@')) {
-    errorMsg.style.display = 'block';
-    return;
-  }
+  if (!upi || !upi.includes('@')) return showToast('Enter valid UPI ID', false);
 
-  errorMsg.style.display = 'none';
-  searchBtn.innerText = 'Tracking...';
-  searchBtn.disabled = true;
-  document.getElementById('spinner').style.display = 'block';
-  document.getElementById('result').style.display = 'none';
-  document.getElementById('searchForm').style.display = 'none';
+  btn.disabled = true;
+  btn.innerHTML = '<span>Tracking...</span>';
 
   try {
     const res = await fetch(`${SERVER}/tracker?upi=${encodeURIComponent(upi)}`);
     const data = await res.json();
 
-    document.getElementById('spinner').style.display = 'none';
-
     if (!data.success) {
-      document.getElementById('searchForm').style.display = 'block';
-      errorMsg.innerText = '⚠️ UPI not found!';
-      errorMsg.style.display = 'block';
-      searchBtn.innerText = 'TRACK NOW';
-      searchBtn.disabled = false;
+      showToast('UPI not found!', false);
+      btn.disabled = false;
+      btn.innerHTML = '<span>Track Now</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       return;
     }
 
-    document.getElementById('totalEarnings').innerText = parseFloat(data.total_earnings).toFixed(2);
-    document.getElementById('maskedUpi').innerText = data.upi_id;
+    // ✅ Filter by offer + date
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+    to.setHours(23, 59, 59);
 
-    const list = document.getElementById('conversionsList');
-    if (data.conversions.length === 0) {
-      list.innerHTML = '<div class="no-data">No conversions yet!</div>';
-    } else {
-      list.innerHTML = data.conversions.map((c, i) => `
-        <div class="conversion-item">
-          <div class="conversion-row"><span class="row-label">SL NO.</span><span class="row-val">${i+1}</span></div>
-          <div class="conversion-row"><span class="row-label">OFFER</span><span class="row-val">${c.offer_name}</span></div>
-          <div class="conversion-row"><span class="row-label">EVENT</span><span class="row-val">${c.event}</span></div>
-          <div class="conversion-row"><span class="row-label">AMOUNT</span><span class="row-val">₹${c.amount}</span></div>
-          <div class="conversion-row"><span class="row-label">STATUS</span><span class="badge badge-${c.status}">${c.status}</span></div>
-          <div class="conversion-row"><span class="row-label">DATE</span><span class="row-val">${new Date(c.time).toLocaleDateString('en-IN')}</span></div>
-          <div class="conversion-row"><span class="row-label">TIME</span><span class="row-val">${new Date(c.time).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true}).toUpperCase()}</span></div>
-        </div>
-      `).join('');
-    }
+    allResults = data.conversions.filter(c => {
+      const cDate = new Date(c.time);
+      const matchOffer = c.offer_name === offer;
+      const matchDate = cDate >= from && cDate <= to;
+      return matchOffer && matchDate;
+    });
 
-    document.getElementById('result').style.display = 'block';
+    renderResults(allResults);
+    document.getElementById('resultsWrap').style.display = 'block';
+    document.getElementById('mainBox').style.marginBottom = '18px';
 
-  } catch(e) {
-    document.getElementById('spinner').style.display = 'none';
-    document.getElementById('searchForm').style.display = 'block';
-    errorMsg.innerText = '⚠️ Error! Try again.';
-    errorMsg.style.display = 'block';
-    searchBtn.innerText = 'TRACK NOW';
-    searchBtn.disabled = false;
+  } catch {
+    showToast('Error! Try again.', false);
   }
+
+  btn.disabled = false;
+  btn.innerHTML = '<span>Track Now</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+
+function filterResults() {
+  const s = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = allResults.filter(r =>
+    !s || (r.status||'').toLowerCase().includes(s) || (r.event||'').toLowerCase().includes(s)
+  );
+  renderResults(filtered);
+}
+
+function renderResults(results) {
+  const list = document.getElementById('resultsList');
+  if (results.length === 0) {
+    list.innerHTML = `
+      <div class="no-result">
+        <div class="no-result-title">No records found</div>
+        <div class="no-result-sub">Try different UPI ID or date range</div>
+      </div>`;
+    return;
+  }
+  list.innerHTML = results.map((r, i) => {
+    const paid = r.status === 'paid' || r.status === 'confirmed';
+    const pending = r.status === 'pending';
+    const badgeColor = paid ? '#22c55e' : pending ? '#f59e0b' : '#ef4444';
+    const badgeText = paid ? 'Confirmed' : pending ? 'Pending' : r.status;
+    const d = new Date(r.time);
+    const date = d.toLocaleDateString('en-IN', {day:'2-digit', month:'2-digit', year:'numeric'});
+    const time = d.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', hour12:true}).toUpperCase();
+    return `
+      <div class="result-card">
+        <div class="result-row"><span class="row-label">SL NO.</span><span class="row-val">${i+1}</span></div>
+        <div class="result-row"><span class="row-label">EVENT</span><span class="row-val">${r.event || 'install'}</span></div>
+        <div class="result-row"><span class="row-label">STATUS</span><span class="badge" style="background:${badgeColor}">${badgeText}</span></div>
+        <div class="result-row"><span class="row-label">AMOUNT</span><span class="row-val">₹${r.amount}</span></div>
+        <div class="result-row"><span class="row-label">DATE</span><span class="row-val">${date}</span></div>
+        <div class="result-row"><span class="row-label">TIME</span><span class="row-val">${time}</span></div>
+      </div>`;
+  }).join('');
 }
 
 function resetForm() {
-  document.getElementById('result').style.display = 'none';
-  document.getElementById('searchForm').style.display = 'block';
+  document.getElementById('resultsWrap').style.display = 'none';
+  document.getElementById('mainBox').style.marginBottom = '0';
+  document.getElementById('searchInput').value = '';
   document.getElementById('upiInput').value = '';
-  document.getElementById('searchBtn').innerText = 'TRACK NOW';
-  document.getElementById('searchBtn').disabled = false;
+  allResults = [];
 }
-
-document.getElementById('upiInput').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') searchStatus();
-});
 </script>
 </body>
-  </html>
+</html>
