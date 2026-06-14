@@ -4,161 +4,240 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Refer & Earn - CashFlix ⚡</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Nunito',sans-serif; background:#f0f4ff; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
-.card { background:#fff; border-radius:24px; padding:24px; max-width:420px; width:100%; box-shadow:0 8px 32px rgba(0,0,0,0.10); border-top:4px solid #0d47a1; }
-.header { display:flex; align-items:center; gap:14px; margin-bottom:20px; }
-.app-icon { width:64px; height:64px; border-radius:16px; background:linear-gradient(135deg,#0d47a1,#1565c0); display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; }
-.header-text h1 { font-size:22px; font-weight:900; color:#1a1a2e; }
-.header-text p { font-size:13px; color:#888; font-weight:600; }
-.form-label { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:800; color:#1a1a2e; margin-bottom:10px; }
-.upi-input { width:100%; padding:14px 18px; border:2px solid #e8ecf4; border-radius:14px; font-size:15px; font-family:'Nunito',sans-serif; font-weight:700; color:#1a1a2e; outline:none; transition:border-color 0.2s; background:#f8f9ff; }
-.upi-input:focus { border-color:#0d47a1; background:#fff; }
-.upi-input::placeholder { color:#bbb; font-weight:600; }
-.submit-btn { width:100%; padding:16px; background:linear-gradient(135deg,#0d47a1,#1565c0); color:#fff; border:none; border-radius:14px; font-size:16px; font-weight:900; font-family:'Nunito',sans-serif; cursor:pointer; letter-spacing:1px; transition:all 0.2s; box-shadow:0 4px 16px rgba(13,71,161,0.4); margin-top:12px; }
-.submit-btn:hover { transform:translateY(-2px); }
-.submit-btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
-.copy-btn { width:100%; padding:16px; background:#fff; color:#0d47a1; border:2px solid #0d47a1; border-radius:14px; font-size:16px; font-weight:900; font-family:'Nunito',sans-serif; cursor:pointer; letter-spacing:1px; margin-top:10px; }
+body { font-family:'Inter',sans-serif; background:#111827; min-height:100vh; display:flex; justify-content:center; align-items:center; padding:24px 0; }
+.wrap { width:100%; max-width:420px; margin:0 16px; }
+.main-box { background:#e8eaf0; border-radius:28px; overflow:hidden; box-shadow:0 24px 64px rgba(0,0,0,.6); }
+.logo-wrap { display:flex; justify-content:center; padding-top:40px; padding-bottom:14px; }
+.logo-outer { width:80px; height:80px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 16px rgba(0,0,0,.13); }
+.logo-inner { width:58px; height:58px; border-radius:14px; background:linear-gradient(135deg,#1a1a2e,#16213e); display:flex; align-items:center; justify-content:center; }
+.title-wrap { text-align:center; padding:0 24px 6px; }
+.title { font-weight:900; font-size:30px; color:#0f172a; letter-spacing:-0.5px; }
+.subtitle { font-weight:400; font-size:16px; color:#94a3b8; margin-top:8px; }
+.form-wrap { padding:20px 20px 0; }
+.select-box { width:100%; height:50px; border-radius:50px; border:none; background:#fff; font-size:14px; font-weight:600; color:#1e293b; outline:none; margin-bottom:14px; box-shadow:0 2px 10px rgba(0,0,0,.08); font-family:'Inter',sans-serif; cursor:pointer; padding-left:18px; }
+.offer-badge { background:#e0f2fe; color:#0369a1; padding:8px 18px; border-radius:50px; font-size:13px; font-weight:800; display:inline-block; margin-bottom:14px; }
+.pill { background:#fff; border-radius:50px; padding:0 16px; display:flex; align-items:center; gap:12px; height:56px; box-shadow:0 2px 12px rgba(0,0,0,.08); border:2px solid transparent; transition:border .2s; }
+.pill.focused { border-color:#0ea5e9; }
+.pill input { flex:1; border:none; outline:none; font-size:15px; font-weight:500; color:#374151; background:transparent; font-family:'Inter',sans-serif; }
+.gen-btn { width:100%; height:54px; border-radius:50px; background:linear-gradient(135deg,#0ea5e9,#0369a1); color:#fff; font-weight:800; font-size:17px; border:none; cursor:pointer; letter-spacing:1.5px; box-shadow:0 4px 20px rgba(14,165,233,.4); font-family:'Inter',sans-serif; margin-top:12px; margin-bottom:16px; transition:all .2s; }
+.gen-btn:hover { transform:translateY(-2px); }
+.gen-btn:disabled { opacity:.7; cursor:not-allowed; transform:none; }
+.link-pill { background:#fff; border-radius:50px; padding:0 16px; display:flex; align-items:center; gap:12px; height:56px; box-shadow:0 2px 12px rgba(0,0,0,.08); margin-bottom:12px; }
+.link-pill div { flex:1; font-size:13px; color:#374151; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.copy-btn { width:100%; height:54px; border-radius:50px; background:linear-gradient(135deg,#0ea5e9,#0369a1); color:#fff; font-weight:800; font-size:16px; border:none; cursor:pointer; letter-spacing:1px; box-shadow:0 4px 20px rgba(14,165,233,.4); font-family:'Inter',sans-serif; margin-bottom:12px; display:flex; align-items:center; justify-content:center; gap:12px; }
+.new-link-btn { width:100%; height:46px; border-radius:50px; background:#fff; color:#0369a1; font-weight:700; font-size:14px; border:2px solid #0ea5e9; cursor:pointer; font-family:'Inter',sans-serif; margin-bottom:16px; }
+.custom-section { padding:0 20px 28px; }
+.custom-header { background:#fff; border-radius:18px; padding:0 20px; height:60px; display:flex; align-items:center; gap:16px; cursor:pointer; box-shadow:0 2px 10px rgba(0,0,0,.08); }
+.custom-header.open { border-radius:18px 18px 0 0; box-shadow:none; }
+.custom-icon { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#0ea5e9,#0369a1); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.custom-title { flex:1; font-weight:700; font-size:16px; color:#0f172a; }
+.chev { transition:transform .25s; }
+.chev.up { transform:rotate(180deg); }
+.custom-body { background:#f1f5f9; border-radius:0 0 18px 18px; overflow:hidden; display:none; }
+.custom-row { background:#fff; padding:16px 20px; display:flex; align-items:center; gap:14px; }
+.custom-row + .custom-row { border-top:1px solid #e2e8f0; }
+.custom-label { flex:1; font-weight:400; font-size:15px; color:#374151; }
+.custom-label.bold { font-weight:700; }
+.custom-input { width:80px; border:none; border-bottom:2.5px solid #0ea5e9; outline:none; font-weight:900; font-size:18px; color:#0f172a; text-align:right; background:transparent; font-family:'Inter',sans-serif; padding:2px 0; }
+.custom-val { font-weight:900; font-size:18px; color:#0f172a; }
+.apply-wrap { padding:14px 16px 16px; }
+.apply-btn { width:100%; height:52px; border-radius:50px; background:linear-gradient(135deg,#0ea5e9,#0369a1); color:#fff; font-weight:700; font-size:15px; border:none; cursor:pointer; font-family:'Inter',sans-serif; box-shadow:0 4px 16px rgba(14,165,233,.35); }
 .error-msg { color:#e53935; font-size:13px; font-weight:700; margin-top:8px; display:none; }
-.divider { height:1px; background:#f0f0f0; margin:20px 0; }
-.powered { text-align:center; margin-top:20px; font-size:12px; color:#bbb; font-weight:700; }
-.powered span { color:#0d47a1; }
-.link-box { background:#f8f9ff; border:2px solid #e8ecf4; border-radius:14px; padding:14px 18px; font-size:13px; font-weight:700; color:#333; word-break:break-all; margin-top:12px; }
-.offer-select { width:100%; padding:14px 18px; border:2px solid #e8ecf4; border-radius:14px; font-size:15px; font-family:'Nunito',sans-serif; font-weight:700; color:#1a1a2e; outline:none; background:#f8f9ff; margin-bottom:16px; cursor:pointer; }
-.payout-box { background:#f0f4ff; border-radius:14px; padding:16px; margin-bottom:16px; }
-.payout-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-.payout-row:last-child { margin-bottom:0; }
-.payout-label { font-size:14px; font-weight:800; color:#1a1a2e; }
-.payout-input { width:80px; padding:8px 12px; border:2px solid #0d47a1; border-radius:10px; font-size:15px; font-family:'Nunito',sans-serif; font-weight:700; color:#0d47a1; outline:none; text-align:center; background:#fff; }
-.total-row { display:flex; justify-content:space-between; background:#0d47a1; border-radius:10px; padding:12px 16px; margin-top:10px; }
-.total-label { font-size:14px; font-weight:800; color:#fff; }
-.total-val { font-size:14px; font-weight:900; color:#fff; }
-.offer-badge { background:#e3f2fd; color:#0d47a1; padding:6px 16px; border-radius:20px; font-size:13px; font-weight:800; display:inline-block; margin-bottom:16px; }
+.toast { position:fixed; bottom:32px; left:50%; transform:translateX(-50%); color:#fff; padding:13px 30px; border-radius:50px; font-weight:700; font-size:13px; z-index:9999; box-shadow:0 4px 24px rgba(0,0,0,.3); white-space:nowrap; font-family:'Inter',sans-serif; display:none; }
+.hidden { display:none; }
 </style>
 </head>
 <body>
-<div class="card">
-  <div class="header">
-    <div class="app-icon">🔗</div>
-    <div class="header-text">
-      <h1>Refer & Earn</h1>
-      <p>Generate your refer link</p>
-    </div>
-  </div>
-
-  <div id="formScreen">
-    <div class="form-label">🎁 Select Offer</div>
-    <!-- ✅ Offer auto select hoga URL se -->
-    <div id="offerBadge" class="offer-badge" style="display:none;"></div>
-    <select class="offer-select" id="offerSelect" onchange="updateOffer()">
-      <option value="Coinswitch" data-amount="200">Coinswitch - ₹200</option>
-      <!-- Naye offers yahan add karo -->
-    </select>
-
-    <div class="form-label"><span>💳</span> Your UPI ID</div>
-    <input type="text" class="upi-input" id="upiInput" placeholder="Enter your UPI ID (e.g. name@upi)">
-    <div class="error-msg" id="errorMsg">⚠️ Please enter a valid UPI ID!</div>
-
-    <div class="divider"></div>
-
-    <div class="form-label">💰 Custom Payout</div>
-    <div class="payout-box">
-      <div class="payout-row">
-        <span class="payout-label">👤 User Gets</span>
-        <input type="number" class="payout-input" id="userPayout" value="100" onchange="updateMyPayout()">
-      </div>
-      <div class="payout-row">
-        <span class="payout-label">🤲 You Get</span>
-        <input type="number" class="payout-input" id="myPayout" value="100" onchange="updateUserPayout()">
-      </div>
-      <div class="total-row">
-        <span class="total-label">Total Payout</span>
-        <span class="total-val" id="totalPayout">₹200</span>
+<div class="wrap">
+  <div class="main-box">
+    <div class="logo-wrap">
+      <div class="logo-outer">
+        <div class="logo-inner">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+            <circle cx="14" cy="12" r="5" stroke="#7c6fcd" stroke-width="2.5"/>
+            <circle cx="24" cy="26" r="5" stroke="#b06ab3" stroke-width="2.5"/>
+            <line x1="14" y1="17" x2="24" y2="21" stroke="#7c6fcd" stroke-width="2" stroke-dasharray="2 2"/>
+            <circle cx="14" cy="12" r="2" fill="#7c6fcd"/>
+            <circle cx="24" cy="26" r="2" fill="#b06ab3"/>
+          </svg>
+        </div>
       </div>
     </div>
+    <div class="title-wrap">
+      <div class="title">Refer & Earn</div>
+      <div class="subtitle" id="subtitle">Coinswitch - Rs. 100/-</div>
+    </div>
 
-    <button class="submit-btn" id="submitBtn" onclick="generateLink()">GENERATE LINK</button>
+    <div class="form-wrap">
+      <div id="offerBadge" class="offer-badge hidden"></div>
+      <select class="select-box" id="offerSelect" onchange="updateOffer()">
+        <option value="Coinswitch" data-amount="200">Coinswitch - Rs. 200/-</option>
+      </select>
+
+      <div id="formStep">
+        <div class="pill" id="upiPill">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M8 10v11M12 10v11M16 10v11M20 10v11" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <input type="text" id="upiInput" placeholder="ENTER YOUR UPI ID"
+            onfocus="document.getElementById('upiPill').classList.add('focused')"
+            onblur="document.getElementById('upiPill').classList.remove('focused')"
+            onkeypress="if(event.key==='Enter') generateLink()"/>
+        </div>
+        <div class="error-msg" id="errorMsg">⚠️ Please enter a valid UPI ID!</div>
+        <button class="gen-btn" id="genBtn" onclick="generateLink()">GENERATE LINK</button>
+      </div>
+
+      <div id="linkStep" class="hidden">
+        <div class="link-pill">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" stroke="#0ea5e9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" stroke="#0ea5e9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div id="linkText"></div>
+        </div>
+        <button class="copy-btn" onclick="copyLink()">
+          COPY REFER LINK
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" stroke="#fff" stroke-width="2.2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="new-link-btn" onclick="resetForm()">Generate New Link</button>
+      </div>
+    </div>
+
+    <div class="custom-section">
+      <div class="custom-header" id="customHeader" onclick="toggleCustom()">
+        <div class="custom-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="5" stroke="#fff" stroke-width="2"/><circle cx="8" cy="8" r="2" fill="#fff"/><circle cx="16" cy="16" r="5" stroke="#fff" stroke-width="2"/><circle cx="16" cy="16" r="2" fill="#fff"/></svg>
+        </div>
+        <div class="custom-title">Custom Refer</div>
+        <svg class="chev" id="chevIcon" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="custom-body" id="customBody">
+        <div class="custom-row">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z" stroke="#0ea5e9" stroke-width="2"/><path d="M16 3H8L4 7h16l-4-4z" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="13" r="1.5" fill="#0ea5e9"/></svg>
+          <span class="custom-label bold">Total Payout</span>
+          <span class="custom-val" id="totalPayoutVal">₹200</span>
+        </div>
+        <div class="custom-row">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#0ea5e9" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/></svg>
+          <span class="custom-label">User Gets</span>
+          <input type="number" class="custom-input" id="userPayout" value="100" min="0" oninput="handleUserChange()">
+        </div>
+        <div class="custom-row">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2v10M8 6l4-4 4 4" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 15c0-2 1-3 3-3h1l2-3h6l2 3h1c2 0 3 1 3 3v2a3 3 0 01-3 3H6a3 3 0 01-3-3v-2z" stroke="#0ea5e9" stroke-width="2"/></svg>
+          <span class="custom-label">Your Cashback</span>
+          <input type="number" class="custom-input" id="myPayout" value="100" min="0" oninput="handleMyChange()">
+        </div>
+        <div class="apply-wrap">
+          <button class="apply-btn" onclick="applyCustom()">Apply Custom Amount</button>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div id="resultScreen" style="display:none;">
-    <div class="divider"></div>
-    <div class="form-label">🔗 Your Refer Link</div>
-    <div class="link-box" id="linkBox"></div>
-    <button class="submit-btn" onclick="copyLink()">📋 Copy Link</button>
-    <button class="copy-btn" onclick="resetForm()">Generate New Link</button>
-  </div>
-
-  <div class="powered">Powered by <span>CashFlix ⚡</span></div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 const SERVER = 'https://cashflix-upi.onrender.com';
 let totalAmt = 200;
 let generatedLink = '';
+let customOpen = false;
 
-// ✅ URL se offer auto select
+// ✅ URL se offer auto select karo
 window.addEventListener('load', function() {
-  const path = window.location.pathname;
-  const parts = path.split('/');
+  const parts = window.location.pathname.split('/');
   const offerFromUrl = parts[parts.length - 1];
 
-  if (offerFromUrl && offerFromUrl !== 'Refer') {
+  if (offerFromUrl && offerFromUrl.toLowerCase() !== 'refer') {
     const select = document.getElementById('offerSelect');
-    let found = false;
     for (let i = 0; i < select.options.length; i++) {
       if (select.options[i].value.toLowerCase() === offerFromUrl.toLowerCase()) {
         select.value = select.options[i].value;
-        found = true;
+        updateOffer();
+        const badge = document.getElementById('offerBadge');
+        badge.innerText = `🎁 ${select.value}`;
+        badge.classList.remove('hidden');
+        select.classList.add('hidden');
         break;
       }
     }
-    if (found) {
-      updateOffer();
-      // Badge dikhao
-      const badge = document.getElementById('offerBadge');
-      badge.innerText = `🎁 ${select.value}`;
-      badge.style.display = 'inline-block';
-      select.style.display = 'none';
-    }
   }
 });
+
+function showToast(msg, ok=true) {
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.background = ok ? '#22c55e' : '#ef4444';
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2600);
+}
 
 function updateOffer() {
   const select = document.getElementById('offerSelect');
   const option = select.options[select.selectedIndex];
   totalAmt = parseInt(option.getAttribute('data-amount'));
-  document.getElementById('totalPayout').innerText = `₹${totalAmt}`;
-  document.getElementById('userPayout').value = Math.floor(totalAmt / 2);
-  document.getElementById('myPayout').value = totalAmt - Math.floor(totalAmt / 2);
+  const userPay = Math.floor(totalAmt / 2);
+  document.getElementById('userPayout').value = userPay;
+  document.getElementById('myPayout').value = totalAmt - userPay;
+  document.getElementById('totalPayoutVal').innerText = `₹${totalAmt}`;
+  document.getElementById('subtitle').innerText = `${select.value} - Rs. ${userPay}/-`;
 }
 
-function updateMyPayout() {
-  const user = Math.min(parseInt(document.getElementById('userPayout').value) || 0, totalAmt);
-  document.getElementById('userPayout').value = user;
-  document.getElementById('myPayout').value = totalAmt - user;
+function handleUserChange() {
+  let val = Math.min(Number(document.getElementById('userPayout').value) || 0, totalAmt);
+  val = Math.max(val, 0);
+  document.getElementById('userPayout').value = val;
+  document.getElementById('myPayout').value = totalAmt - val;
+  document.getElementById('subtitle').innerText = `${document.getElementById('offerSelect').value} - Rs. ${val}/-`;
 }
 
-function updateUserPayout() {
-  const my = Math.min(parseInt(document.getElementById('myPayout').value) || 0, totalAmt);
-  document.getElementById('myPayout').value = my;
-  document.getElementById('userPayout').value = totalAmt - my;
+function handleMyChange() {
+  let val = Math.min(Number(document.getElementById('myPayout').value) || 0, totalAmt);
+  val = Math.max(val, 0);
+  document.getElementById('myPayout').value = val;
+  const userVal = totalAmt - val;
+  document.getElementById('userPayout').value = userVal;
+  document.getElementById('subtitle').innerText = `${document.getElementById('offerSelect').value} - Rs. ${userVal}/-`;
+}
+
+function toggleCustom() {
+  customOpen = !customOpen;
+  const header = document.getElementById('customHeader');
+  const body = document.getElementById('customBody');
+  const chev = document.getElementById('chevIcon');
+  if (customOpen) {
+    header.classList.add('open');
+    body.style.display = 'block';
+    chev.classList.add('up');
+  } else {
+    header.classList.remove('open');
+    body.style.display = 'none';
+    chev.classList.remove('up');
+  }
+}
+
+function applyCustom() {
+  const u = Number(document.getElementById('userPayout').value) || Math.floor(totalAmt/2);
+  const m = totalAmt - u;
+  document.getElementById('userPayout').value = u;
+  document.getElementById('myPayout').value = m;
+  document.getElementById('subtitle').innerText = `${document.getElementById('offerSelect').value} - Rs. ${u}/-`;
+  toggleCustom();
+  showToast(`User ₹${u} + You ₹${m} = ₹${totalAmt}`, true);
 }
 
 async function generateLink() {
   const upi = document.getElementById('upiInput').value.trim();
   const errorMsg = document.getElementById('errorMsg');
-  const submitBtn = document.getElementById('submitBtn');
+  const genBtn = document.getElementById('genBtn');
 
-  if (!upi || !upi.includes('@')) {
+  if (!upi.includes('@')) {
     errorMsg.style.display = 'block';
     return;
   }
-
   errorMsg.style.display = 'none';
-  submitBtn.innerText = 'Generating...';
-  submitBtn.disabled = true;
+
+  genBtn.innerText = 'Generating...';
+  genBtn.disabled = true;
 
   const offerId = document.getElementById('offerSelect').value;
   const userPayout = parseInt(document.getElementById('userPayout').value) || 0;
@@ -179,38 +258,31 @@ async function generateLink() {
     const data = await res.json();
     if (data.success) {
       generatedLink = `${data.landing_url}?source=${data.code}`;
-      document.getElementById('linkBox').innerText = generatedLink;
-      document.getElementById('formScreen').style.display = 'none';
-      document.getElementById('resultScreen').style.display = 'block';
+      document.getElementById('linkText').innerText = generatedLink;
+      document.getElementById('formStep').classList.add('hidden');
+      document.getElementById('linkStep').classList.remove('hidden');
+      showToast('Refer link generated!', true);
     } else {
-      errorMsg.innerText = '⚠️ Error! Try again.';
-      errorMsg.style.display = 'block';
+      showToast('Error! Try again.', false);
     }
-  } catch(e) {
-    errorMsg.innerText = '⚠️ Error! Try again.';
-    errorMsg.style.display = 'block';
+  } catch {
+    showToast('Error! Try again.', false);
   }
 
-  submitBtn.innerText = 'GENERATE LINK';
-  submitBtn.disabled = false;
+  genBtn.innerText = 'GENERATE LINK';
+  genBtn.disabled = false;
 }
 
 function copyLink() {
-  navigator.clipboard.writeText(generatedLink).then(() => {
-    alert('Link copied! 🎉');
-  });
+  navigator.clipboard.writeText(generatedLink).then(() => showToast('Link copied!', true));
 }
 
 function resetForm() {
-  document.getElementById('formScreen').style.display = 'block';
-  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('formStep').classList.remove('hidden');
+  document.getElementById('linkStep').classList.add('hidden');
   document.getElementById('upiInput').value = '';
   generatedLink = '';
 }
-
-document.getElementById('upiInput').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') generateLink();
-});
 </script>
 </body>
 </html>
