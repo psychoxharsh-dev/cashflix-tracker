@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Chart - CashFlix ⚡</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; background:#111827; min-height:100vh; padding:20px; }
+.wrap { max-width:1200px; margin:0 auto; }
+.header { text-align:center; margin-bottom:24px; }
+.title { font-weight:900; font-size:28px; color:#fff; }
+.subtitle { color:#94a3b8; font-size:14px; margin-top:6px; }
+
+.login-box { max-width:360px; margin:80px auto; background:#fff; border-radius:20px; padding:32px 24px; box-shadow:0 8px 32px rgba(0,0,0,.3); text-align:center; }
+.login-box input { width:100%; padding:14px 18px; border:2px solid #e8ecf4; border-radius:14px; font-size:15px; font-weight:700; outline:none; margin-bottom:14px; font-family:'Inter',sans-serif; }
+.login-box button { width:100%; padding:14px; background:linear-gradient(135deg,#0ea5e9,#0369a1); color:#fff; border:none; border-radius:14px; font-weight:800; font-size:15px; cursor:pointer; }
+.login-box .err { color:#ef4444; font-size:13px; margin-top:8px; display:none; font-weight:700; }
+
+.table-wrap { background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,.3); display:none; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { background:#0ea5e9; color:#fff; padding:12px 14px; text-align:left; font-weight:800; white-space:nowrap; position:sticky; top:0; }
+td { padding:12px 14px; border-bottom:1px solid #f0f9ff; color:#1e293b; font-weight:600; white-space:nowrap; }
+tr:hover td { background:#f0f9ff; }
+.badge { padding:4px 12px; border-radius:20px; font-weight:800; font-size:11px; }
+.badge-paid { background:#dcfce7; color:#16a34a; }
+.badge-tracked { background:#e0f2fe; color:#0369a1; }
+.badge-pending { background:#fef3c7; color:#d97706; }
+.table-scroll { overflow-x:auto; }
+.refresh-btn { display:block; margin:0 auto 16px; padding:10px 24px; background:linear-gradient(135deg,#0ea5e9,#0369a1); color:#fff; border:none; border-radius:50px; font-weight:800; font-size:13px; cursor:pointer; }
+.no-data { text-align:center; padding:40px; color:#94a3b8; font-weight:700; }
+.no-refer { color:#cbd5e1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="title">📊 Admin Conversions</div>
+    <div class="subtitle">CashFlix UPI System</div>
+  </div>
+
+  <div class="login-box" id="loginBox">
+    <input type="password" id="tokenInput" placeholder="Enter Admin Token" onkeypress="if(event.key==='Enter') loadData()">
+    <button onclick="loadData()">Login</button>
+    <div class="err" id="errMsg">⚠️ Invalid token!</div>
+  </div>
+
+  <button class="refresh-btn" id="refreshBtn" style="display:none;" onclick="loadData()">🔄 Refresh</button>
+
+  <div class="table-wrap" id="tableWrap">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>SL NO.</th>
+            <th>OFFER</th>
+            <th>EVENT</th>
+            <th>USER UPI</th>
+            <th>USER AMOUNT</th>
+            <th>STATUS</th>
+            <th>REFER UPI</th>
+            <th>REFER AMOUNT</th>
+            <th>DATE</th>
+            <th>TIME</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const SERVER = 'https://cashflix-upi.onrender.com';
+
+async function loadData() {
+  const token = document.getElementById('tokenInput').value.trim();
+  const errMsg = document.getElementById('errMsg');
+
+  if (!token) return;
+
+  try {
+    const res = await fetch(`${SERVER}/admin/conversions?token=${encodeURIComponent(token)}`);
+    const data = await res.json();
+
+    if (!data.success) {
+      errMsg.style.display = 'block';
+      return;
+    }
+
+    errMsg.style.display = 'none';
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('refreshBtn').style.display = 'block';
+    document.getElementById('tableWrap').style.display = 'block';
+
+    window.adminToken = token;
+    renderTable(data.conversions);
+
+  } catch(e) {
+    errMsg.style.display = 'block';
+  }
+}
+
+function renderTable(conversions) {
+  const tbody = document.getElementById('tableBody');
+
+  if (conversions.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10" class="no-data">No data found</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = conversions.map((c, i) => {
+    const paid = c.status === 'paid';
+    const pending = c.status === 'pending';
+    let badgeClass = 'badge-tracked';
+    if (paid) badgeClass = 'badge-paid';
+    else if (pending) badgeClass = 'badge-pending';
+
+    const d = new Date(c.time);
+    const date = d.toLocaleDateString('en-IN', {day:'2-digit', month:'2-digit', year:'numeric'});
+    const time = d.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', hour12:true}).toUpperCase();
+
+    const referUpi = c.refer_upi || '<span class="no-refer">—</span>';
+    const referAmt = c.refer_amount > 0 ? `₹${c.refer_amount}` : '<span class="no-refer">—</span>';
+
+    return `
+      <tr>
+        <td>${i+1}</td>
+        <td>${c.offer_name}</td>
+        <td>${c.event || 'install'}</td>
+        <td>${c.upi_id}</td>
+        <td>₹${c.amount}</td>
+        <td><span class="badge ${badgeClass}">${c.status}</span></td>
+        <td>${referUpi}</td>
+        <td>${referAmt}</td>
+        <td>${date}</td>
+        <td>${time}</td>
+      </tr>`;
+  }).join('');
+}
+</script>
+</body>
+  </html>
