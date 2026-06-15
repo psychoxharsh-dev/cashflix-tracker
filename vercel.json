@@ -1,6 +1,10 @@
 {
   "rewrites": [
-    { "source": "/Tracker/User/:offer", "destination": "/tracker.html" },
-    { "source": "/Refer/:offer", "destination": "/refer.html" }
+    { "source": "/Tracker/User/:upi", "destination": "/tracker.html" },
+    { "source": "/Tracker/User", "destination": "/tracker.html" },
+    { "source": "/Tracker", "destination": "/tracker.html" },
+    { "source": "/Refer/:offer", "destination": "/refer.html" },
+    { "source": "/Refer", "destination": "/refer.html" },
+    { "source": "/Admin", "destination": "/admin.html" }
   ]
 }
