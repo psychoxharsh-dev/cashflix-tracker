@@ -198,23 +198,19 @@ function renderResults(results) {
   }
 
   list.innerHTML = results.map((r, i) => {
-    const paid = r.status === 'paid';
-    const pending = r.status === 'pending';
-    // ✅ Tracked bhi green aur Confirmed
-    const badgeColor = paid || r.status === 'tracked' ? '#22c55e' : pending ? '#f59e0b' : '#ef4444';
-    const badgeText = paid || r.status === 'tracked' ? 'Confirmed' : pending ? 'Pending' : r.status;
+    // ✅ Tracked + Paid dono green Confirmed
+    const badgeColor = (r.status === 'paid' || r.status === 'tracked') ? '#22c55e' : r.status === 'pending' ? '#f59e0b' : '#ef4444';
+    const badgeText = (r.status === 'paid' || r.status === 'tracked') ? 'Confirmed' : r.status === 'pending' ? 'Pending' : r.status;
 
-    // ✅ IST time
+    // ✅ Date format: 02 Jun 2026
     const d = new Date(r.time);
-    const date = d.toLocaleDateString('en-IN', {day:'2-digit', month:'2-digit', year:'numeric', timeZone:'Asia/Kolkata'});
+    const date = d.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric', timeZone:'Asia/Kolkata'});
     const time = d.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', hour12:true, timeZone:'Asia/Kolkata'}).toUpperCase();
 
     return `
       <div class="result-card">
         <div class="result-row"><span class="row-label">SL NO.</span><span class="row-val">${i+1}</span></div>
-        <div class="result-row"><span class="row-label">OFFER</span><span class="row-val">${r.offer_name}</span></div>
         <div class="result-row"><span class="row-label">EVENT</span><span class="row-val">${r.event || 'install'}</span></div>
-        <div class="result-row"><span class="row-label">AMOUNT</span><span class="row-val">₹${r.amount}</span></div>
         <div class="result-row"><span class="row-label">STATUS</span><span class="badge" style="background:${badgeColor}">${badgeText}</span></div>
         <div class="result-row"><span class="row-label">DATE</span><span class="row-val">${date}</span></div>
         <div class="result-row"><span class="row-label">TIME</span><span class="row-val">${time}</span></div>
@@ -230,4 +226,4 @@ function resetForm() {
 }
 </script>
 </body>
-</html>
+          </html>
