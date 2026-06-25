@@ -67,8 +67,8 @@ body { font-family:'Inter',sans-serif; background:#111827; min-height:100vh; dis
     </div>
     <div class="form-wrap">
       <select class="select-box" id="offerSelect" onchange="updateSubtitle()">
+        <option value="Coinswitch">Coinswitch</option>
         <option value="JigriSuper">JigriSuper</option>
-        <option value="Coinswitch">DigiCredit</option>
       </select>
       <div class="pill" id="upiPill">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M8 10v11M12 10v11M16 10v11M20 10v11" stroke="#2952c4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -113,9 +113,10 @@ body { font-family:'Inter',sans-serif; background:#111827; min-height:100vh; dis
 const SERVER = 'https://cashflix-upi-8mzd.onrender.com';
 let allResults = [];
 
-const today = new Date().toISOString().slice(0, 10);
-document.getElementById('fromDate').value = today;
-document.getElementById('toDate').value = today;
+// ✅ Today IST mein
+const todayIST = new Date().toLocaleDateString('en-CA', {timeZone: 'Asia/Kolkata'});
+document.getElementById('fromDate').value = todayIST;
+document.getElementById('toDate').value = todayIST;
 
 window.addEventListener('load', function() {
   const parts = window.location.pathname.split('/');
@@ -154,9 +155,9 @@ async function trackNow() {
     const res = await fetch(`${SERVER}/tracker?upi=${encodeURIComponent(upi)}`);
     const data = await res.json();
 
-    const from = new Date(fromDate);
-    const to = new Date(toDate);
-    to.setHours(23, 59, 59);
+    // ✅ IST date range — UTC offset 5:30 handle karo
+    const from = new Date(fromDate + 'T00:00:00+05:30');
+    const to = new Date(toDate + 'T23:59:59+05:30');
 
     if (!data.success) {
       allResults = [];
@@ -199,11 +200,10 @@ function renderResults(results) {
   }
 
   list.innerHTML = results.map((r, i) => {
-    // ✅ Tracked + Paid dono green Confirmed
     const badgeColor = (r.status === 'paid' || r.status === 'tracked') ? '#22c55e' : r.status === 'pending' ? '#f59e0b' : '#ef4444';
     const badgeText = (r.status === 'paid' || r.status === 'tracked') ? 'Confirmed' : r.status === 'pending' ? 'Pending' : r.status;
 
-    // ✅ Date format: 02 Jun 2026
+    // ✅ IST time
     const d = new Date(r.time);
     const date = d.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric', timeZone:'Asia/Kolkata'});
     const time = d.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', hour12:true, timeZone:'Asia/Kolkata'}).toUpperCase();
@@ -227,4 +227,4 @@ function resetForm() {
 }
 </script>
 </body>
-          </html>
+</html>
