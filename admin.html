@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<title>CashFlix Admin</title>
+<style>
+:root {
+  --bg:#f5efe2; --card:#fbf8f0; --ink:#24231f; --ink2:#5b574c; --line:#ddd4c1;
+  --ok:#3f6b4a; --ok-bg:#e1ecdf; --err:#b3392f; --err-bg:#f4dcd8; --warn:#9a6a14; --warn-bg:#f3e6c4;
+  --btn:#24231f; --btn-ink:#f5efe2; --shadow:0 1px 0 rgba(0,0,0,.04), 0 8px 24px -14px rgba(0,0,0,.25);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#171613; --card:#22211d; --ink:#f1ebdd; --ink2:#a8a291; --line:#3a382f;
+    --ok:#8fc29b; --ok-bg:#243528; --err:#f0877c; --err-bg:#3d2320; --warn:#e3b862; --warn-bg:#3a3017;
+    --btn:#f1ebdd; --btn-ink:#171613; --shadow:none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#171613; --card:#22211d; --ink:#f1ebdd; --ink2:#a8a291; --line:#3a382f;
+  --ok:#8fc29b; --ok-bg:#243528; --err:#f0877c; --err-bg:#3d2320; --warn:#e3b862; --warn-bg:#3a3017;
+  --btn:#f1ebdd; --btn-ink:#171613; --shadow:none;
+}
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+body { background:var(--bg); color:var(--ink); font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; min-height:100vh; }
+button, input, select, textarea { font:inherit; color:inherit; }
+.hidden { display:none !important; }
+.num { font-variant-numeric:tabular-nums; }
+.wrap { max-width:780px; margin:0 auto; padding:0 16px 80px; }
+
+/* login */
+.login { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+.login-card { width:100%; max-width:360px; background:var(--card); border:1px solid var(--line); border-radius:20px; padding:26px; box-shadow:var(--shadow); }
+.login-card h1 { font-size:22px; margin-bottom:4px; }
+.login-card p { color:var(--ink2); margin-bottom:18px; }
+
+/* header + tabs */
+.top { position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1px solid var(--line); }
+.top-row { max-width:780px; margin:0 auto; padding:12px 16px 8px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.brand { font-weight:800; font-size:18px; letter-spacing:-.3px; }
+.brand small { font-weight:600; color:var(--ink2); font-size:12px; margin-left:6px; }
+.tabs { max-width:780px; margin:0 auto; padding:0 12px 10px; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; }
+.tabs::-webkit-scrollbar { display:none; }
+.tab { flex:none; border:1px solid var(--line); background:transparent; padding:8px 14px; border-radius:999px; font-weight:700; font-size:14px; cursor:pointer; color:var(--ink2); }
+.tab.on { background:var(--btn); color:var(--btn-ink); border-color:var(--btn); }
+.tab .dot { display:inline-block; min-width:18px; padding:0 5px; margin-left:6px; border-radius:99px; background:var(--err); color:#fff; font-size:11px; line-height:18px; text-align:center; }
+
+/* controls */
+.btn { border:0; background:var(--btn); color:var(--btn-ink); padding:10px 16px; border-radius:12px; font-weight:700; cursor:pointer; }
+.btn:disabled { opacity:.55; cursor:not-allowed; }
+.btn.ghost { background:transparent; color:var(--ink); border:1px solid var(--line); }
+.btn.ok { background:var(--ok); color:#fff; }
+.btn.err { background:var(--err); color:#fff; }
+.btn.sm { padding:7px 12px; border-radius:10px; font-size:13px; white-space:nowrap; }
+.btn.block { width:100%; }
+.field { margin-bottom:12px; }
+.field label { display:block; font-weight:700; font-size:13px; margin-bottom:5px; }
+.field .help { color:var(--ink2); font-size:12px; margin-top:4px; }
+.inp { width:100%; padding:11px 13px; border:1.5px solid var(--line); background:var(--bg); border-radius:12px; outline:none; }
+.inp:focus { border-color:var(--ink); }
+textarea.inp { min-height:130px; resize:vertical; }
+.row { display:flex; gap:10px; align-items:center; }
+.row > * { flex:1; }
+.row > .fit { flex:none; }
+.check { display:flex; gap:9px; align-items:center; font-size:14px; font-weight:600; margin:6px 0 10px; }
+.check input { width:18px; height:18px; accent-color:var(--ok); }
+
+/* cards */
+h2.sec { font-size:13px; font-weight:800; color:var(--ink2); margin:22px 2px 10px; }
+.grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-top:16px; }
+@media (min-width:560px) { .grid { grid-template-columns:repeat(3, 1fr); } }
+.stat { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px; box-shadow:var(--shadow); }
+.stat b { display:block; font-size:24px; letter-spacing:-.5px; margin-bottom:2px; }
+.stat span { color:var(--ink2); font-size:13px; }
+.stat.hot { border-color:var(--warn); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px; margin-bottom:10px; box-shadow:var(--shadow); }
+.card .head { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+.card .amt { font-size:22px; font-weight:800; letter-spacing:-.4px; }
+.sub { color:var(--ink2); font-size:13px; }
+.mono { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px; word-break:break-all; }
+.badge { display:inline-block; white-space:nowrap; padding:3px 10px; border-radius:99px; font-size:12px; font-weight:800; }
+.b-pending { background:var(--warn-bg); color:var(--warn); }
+.b-processing { background:var(--warn-bg); color:var(--warn); }
+.b-paid, .b-on { background:var(--ok-bg); color:var(--ok); }
+.b-cancelled, .b-off, .b-blocked { background:var(--err-bg); color:var(--err); }
+.b-code { background:var(--line); color:var(--ink2); }
+.actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.link { color:var(--ink); text-decoration:underline; text-underline-offset:3px; cursor:pointer; font-weight:700; background:none; border:0; padding:0; }
+.chips { display:flex; gap:6px; flex-wrap:wrap; margin:16px 0 12px; }
+.chip { border:1px solid var(--line); background:transparent; border-radius:99px; padding:6px 13px; font-size:13px; font-weight:700; color:var(--ink2); cursor:pointer; }
+.chip.on { background:var(--ink); color:var(--bg); border-color:var(--ink); }
+.empty { text-align:center; color:var(--ink2); padding:36px 10px; }
+.kv { display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px dashed var(--line); font-size:14px; }
+.kv:last-child { border:0; }
+.kv span:first-child { color:var(--ink2); }
+.kv span:last-child { text-align:right; word-break:break-all; }
+.warnbox { background:var(--warn-bg); color:var(--warn); border-radius:14px; padding:12px 14px; font-size:14px; margin-top:14px; }
+.warnbox ul { margin:6px 0 0 18px; }
+pre.sql { background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:12px; font-size:12px; overflow-x:auto; white-space:pre; }
+
+/* sheet + toast */
+.scrim { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:50; display:flex; align-items:flex-end; justify-content:center; }
+.sheet { background:var(--bg); width:100%; max-width:640px; max-height:92vh; overflow-y:auto; border-radius:22px 22px 0 0; padding:18px 18px 28px; border:1px solid var(--line); }
+@media (min-width:700px) { .scrim { align-items:center; } .sheet { border-radius:22px; } }
+.sheet h3 { font-size:19px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; }
+.x { border:0; background:var(--line); color:var(--ink); width:32px; height:32px; border-radius:50%; font-size:18px; cursor:pointer; }
+.toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px); background:var(--btn); color:var(--btn-ink); padding:11px 18px; border-radius:99px; font-weight:700; font-size:14px; z-index:99; opacity:0; pointer-events:none; transition:all .25s; max-width:calc(100vw - 32px); text-align:center; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.toast.bad { background:var(--err); color:#fff; }
+@media (prefers-reduced-motion: reduce) { .toast { transition:none; } }
+</style>
+</head>
+<body>
+
+<div id="login" class="login hidden">
+  <div class="login-card">
+    <h1 id="loginTitle">CashFlix Admin</h1>
+    <p id="loginMsg">Opening...</p>
+    <button class="btn block hidden" id="loginRetry" type="button">Try again</button>
+    <form id="testForm" class="hidden" style="margin-top:14px">
+      <div class="field"><label for="tpw">Test password</label><input id="tpw" class="inp" type="password" autocomplete="off"></div>
+      <button class="btn ghost block" type="submit">Sign in (test)</button>
+    </form>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <div class="top">
+    <div class="top-row">
+      <div class="brand">CashFlix<small>Admin</small></div>
+      <div class="row fit" style="gap:8px"><button class="btn ghost sm" id="refreshBtn">Refresh</button></div>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-tab="home">Home</button>
+      <button class="tab" data-tab="wd">Withdrawals<span class="dot hidden" id="wdDot">0</span></button>
+      <button class="tab" data-tab="users">Users</button>
+      <button class="tab" data-tab="offers">Offers</button>
+      <button class="tab" data-tab="bc">Broadcast</button>
+      <button class="tab" data-tab="act">Activity</button>
+      <button class="tab" data-tab="set">Settings</button>
+    </div>
+  </div>
+  <div class="wrap" id="view"></div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const LP = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes\">\n<title>__TITLE__ - CashFlix ⚡<\/title>\n<link href=\"https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap\" rel=\"stylesheet\">\n<style>\n:root {\n  --charcoal: #24231f;\n  --charcoal-soft: #34322d;\n  --cream: #f5efe2;\n  --cream-deep: #ebe3d1;\n  --stone: #8a8577;\n  --line: #ddd4c1;\n  --error: #b3392f;\n  --ok: #3f6b4a;\n}\n* { margin:0; padding:0; box-sizing:border-box; }\nbody {\n  font-family:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;\n  background:var(--charcoal);\n  color:var(--charcoal);\n  min-height:100vh;\n  display:flex; align-items:center; justify-content:center;\n  padding:20px;\n  -webkit-font-smoothing:antialiased;\n}\n\n/* ---------- Main card ---------- */\n.main-card {\n  background:var(--cream);\n  border-radius:28px;\n  padding:22px;\n  max-width:420px; width:100%;\n  box-shadow:0 30px 60px -20px rgba(0,0,0,0.55);\n}\n\n.header { display:flex; align-items:center; gap:14px; margin-bottom:18px; padding:2px 2px 0; }\n.app-icon { width:58px; height:58px; border-radius:16px; background:var(--charcoal); overflow:hidden; flex-shrink:0; }\n.app-icon img { width:100%; height:100%; object-fit:cover; display:block; }\n.header-text h1 { font-size:24px; font-weight:800; letter-spacing:-0.5px; line-height:1.1; }\n.header-text p { font-size:14px; color:var(--stone); font-weight:500; margin-top:3px; }\n\n/* ---------- Cashback panel (the one bold moment) ---------- */\n.cashback-box {\n  background:var(--charcoal);\n  color:var(--cream);\n  border-radius:20px;\n  padding:22px 22px 20px;\n  margin-bottom:22px;\n  position:relative; overflow:hidden;\n}\n.cashback-box::after {\n  content:''; position:absolute; right:-46px; bottom:-60px;\n  width:170px; height:170px; border-radius:50%;\n  border:1.5px solid var(--charcoal-soft);\n  box-shadow:0 0 0 22px rgba(245,239,226,0.02), 0 0 0 44px rgba(245,239,226,0.02);\n}\n.cashback-label { font-size:14px; font-weight:500; color:#b9b3a3; margin-bottom:4px; }\n.cashback-amount { font-size:76px; font-weight:800; line-height:1; letter-spacing:-3px; margin-bottom:16px; display:flex; align-items:flex-start; }\n.cashback-amount span { font-size:34px; letter-spacing:0; margin:8px 4px 0 0; font-weight:700; color:#d8d1bf; }\n.badges { display:flex; gap:8px; flex-wrap:wrap; position:relative; z-index:1; }\n.badge {\n  display:flex; align-items:center; gap:6px;\n  font-size:12.5px; font-weight:700; color:var(--cream);\n  background:var(--charcoal-soft); border-radius:999px; padding:6px 12px 6px 9px;\n}\n.badge::before { content:'✓'; font-weight:800; font-size:11px; color:#cfc7b2; }\n\n/* ---------- Form ---------- */\n.form-label { display:flex; align-items:center; gap:8px; font-size:15px; font-weight:700; margin-bottom:10px; }\n.form-label svg { width:18px; height:18px; flex-shrink:0; }\n.phone-input {\n  width:100%; padding:16px 18px;\n  border:1.5px solid var(--line); border-radius:14px;\n  font-size:17px; font-family:inherit; font-weight:700; letter-spacing:0.5px;\n  color:var(--charcoal); background:#fbf8f0; outline:none;\n  transition:border-color .2s, box-shadow .2s;\n}\n.phone-input:focus { border-color:var(--charcoal); box-shadow:0 0 0 4px rgba(36,35,31,0.08); }\n.phone-input::placeholder { color:#b3ac9b; font-weight:500; letter-spacing:0; font-size:15px; }\n.error-msg { color:var(--error); font-size:13px; font-weight:600; margin-top:8px; display:none; }\n\n.submit-btn {\n  width:100%; padding:17px; margin-top:12px;\n  background:var(--charcoal); color:var(--cream);\n  border:none; border-radius:14px;\n  font-size:16px; font-weight:800; font-family:inherit; letter-spacing:0.3px;\n  cursor:pointer; transition:transform .15s, background .2s;\n}\n.submit-btn:hover { background:#000; transform:translateY(-1px); }\n.submit-btn:active { transform:translateY(0); }\n.submit-btn:focus-visible, .phone-input:focus-visible { outline:3px solid var(--stone); outline-offset:2px; }\n.submit-btn:disabled { opacity:0.65; cursor:not-allowed; transform:none; }\n\n.verify-box { margin-top:12px; display:flex; flex-direction:column; align-items:center; gap:8px; min-height:65px; }\n.verify-note { font-size:12.5px; color:var(--stone); font-weight:500; }\n.divider { height:1px; background:var(--line); margin:22px 0; }\n\n/* ---------- Steps (a real sequence, so numbered) ---------- */\n.steps-title { font-size:16px; font-weight:800; margin-bottom:16px; letter-spacing:-0.2px; }\n.step { display:flex; align-items:flex-start; gap:13px; margin-bottom:14px; position:relative; }\n.step:not(:last-of-type)::after {\n  content:''; position:absolute; left:13.5px; top:32px; bottom:-12px; width:1.5px; background:var(--line);\n}\n.step-num {\n  background:var(--cream-deep); color:var(--charcoal);\n  width:28px; height:28px; border-radius:50%;\n  display:flex; align-items:center; justify-content:center;\n  font-size:13px; font-weight:800; flex-shrink:0;\n  border:1.5px solid var(--charcoal);\n}\n.step-text { font-size:14.5px; font-weight:500; color:#4a473f; line-height:1.45; padding-top:3px; }\n.step-text .highlight { background:var(--charcoal); color:var(--cream); padding:2px 9px; border-radius:20px; font-weight:700; }\n.powered { text-align:center; margin-top:22px; font-size:12.5px; color:var(--stone); font-weight:500; }\n.powered span { color:var(--charcoal); font-weight:800; }\n\n/* ---------- Paused card ---------- */\n.pause-card {\n  width:320px; max-width:100%;\n  background:var(--cream); border-radius:32px;\n  padding:80px 26px 38px; text-align:center; position:relative;\n  box-shadow:0 30px 60px -20px rgba(0,0,0,0.55);\n}\n.pause-icon {\n  position:absolute; top:-40px; left:50%; transform:translateX(-50%);\n  width:96px; height:96px; border-radius:50%;\n  background:var(--charcoal); border:5px solid var(--cream);\n  display:flex; justify-content:center; align-items:center; gap:10px;\n}\n.pause-icon .bar { width:9px; height:38px; background:var(--cream); border-radius:20px; }\n.pause-title { font-size:20px; font-weight:800; letter-spacing:-0.3px; margin-bottom:14px; }\n.pause-text { font-size:14px; line-height:1.7; color:var(--stone); font-weight:500; }\n\n/* ---------- Toasts ---------- */\n.toast {\n  position:fixed; top:24px; left:50%; transform:translateX(-50%) translateY(-16px);\n  background:var(--cream); color:var(--charcoal);\n  padding:11px 20px 11px 11px; border-radius:50px;\n  font-size:14px; font-weight:700;\n  z-index:10000; opacity:0; visibility:hidden;\n  transition:all .35s cubic-bezier(0.34,1.56,0.64,1);\n  box-shadow:0 14px 34px -8px rgba(0,0,0,0.5);\n  display:flex; align-items:center; gap:10px; white-space:nowrap;\n  border:1.5px solid var(--charcoal);\n  max-width:calc(100vw - 32px);\n}\n.toast.show { opacity:1; visibility:visible; transform:translateX(-50%) translateY(0); }\n.toast-icon {\n  width:24px; height:24px; border-radius:50%;\n  background:var(--ok); color:#fff;\n  display:flex; align-items:center; justify-content:center;\n  font-size:13px; font-weight:800; flex-shrink:0;\n}\n.toast-icon.error { background:var(--error); }\n\n.hidden { display:none; }\n\n@media (max-width:380px) {\n  .cashback-amount { font-size:64px; }\n  .toast { white-space:normal; }\n}\n@media (prefers-reduced-motion:reduce) {\n  * { transition:none !important; }\n}\n<\/style>\n<link rel=\"preconnect\" href=\"https://challenges.cloudflare.com\">\n<link rel=\"preconnect\" href=\"https://cash-flix-dytv.onrender.com\">\n<\/head>\n<body>\n\n<!-- Form Card -->\n<div id=\"formCard\" class=\"main-card\">\n  <div class=\"header\">\n    <div class=\"app-icon\"><img src=\"__LOGO__\" alt=\"__TITLE__\"><\/div>\n    <div class=\"header-text\">\n      <h1>__TITLE__<\/h1>\n      <p>Complete &amp; earn instantly<\/p>\n    <\/div>\n  <\/div>\n\n  <div class=\"cashback-box\">\n    <div class=\"cashback-label\">Total cashback<\/div>\n    <div class=\"cashback-amount\"><span>₹<\/span>__AMOUNT__<\/div>\n    <div class=\"badges\">\n      <div class=\"badge\">Instant<\/div>\n      <div class=\"badge\">Guaranteed<\/div>\n      <div class=\"badge\">Secure<\/div>\n    <\/div>\n  <\/div>\n\n  <div class=\"form-label\">\n    <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"5\" width=\"20\" height=\"14\" rx=\"3\"/><path d=\"M2 10h20\"/><path d=\"M6 15h4\"/><\/svg>\n    Wallet number\n  <\/div>\n  <input type=\"tel\" class=\"phone-input\" id=\"phoneInput\" placeholder=\"Enter 10 digit wallet number\" maxlength=\"10\" inputmode=\"numeric\" autocomplete=\"tel\">\n  <div class=\"error-msg\" id=\"errorMsg\">Please enter a valid 10 digit number.<\/div>\n  <div id=\"verifyBox\" class=\"verify-box\"><div id=\"turnstileBox\"><\/div><div class=\"verify-note\">Verify you are human to continue<\/div><\/div>\n  <button class=\"submit-btn hidden\" id=\"submitBtn\" onclick=\"handleSubmit()\">SUBMIT<\/button>\n\n  <div class=\"divider\"><\/div>\n\n  <div class=\"steps-title\">How to complete this offer<\/div>\n  <div class=\"step\"><div class=\"step-num\">1<\/div><div class=\"step-text\">Enter your wallet number and submit.<\/div><\/div>\n  <div class=\"step\"><div class=\"step-num\">2<\/div><div class=\"step-text\">Install and register the partner app.<\/div><\/div>\n  <div class=\"step\"><div class=\"step-num\">3<\/div><div class=\"step-text\">Done! You will get <span class=\"highlight\">₹__AMOUNT__<\/span> cashback in your wallet.<\/div><\/div>\n\n  <div class=\"powered\">Powered by <span>CashFlix ⚡<\/span><\/div>\n<\/div>\n\n<!-- Paused Card -->\n<div id=\"pausedCard\" class=\"hidden pause-card\">\n  <div class=\"pause-icon\">\n    <div class=\"bar\"><\/div>\n    <div class=\"bar\"><\/div>\n  <\/div>\n  <div class=\"pause-title\">Temporarily paused<\/div>\n  <div class=\"pause-text\">\n    This offer is currently unavailable.<br>\n    It will be live again shortly.<br>\n    Please check back soon.\n  <\/div>\n<\/div>\n\n<div id=\"toastMessage\" class=\"toast\">\n  <span class=\"toast-icon\">✓<\/span>\n  <span>Success! Redirecting you now...<\/span>\n<\/div>\n\n<div id=\"errorToast\" class=\"toast\">\n  <span class=\"toast-icon error\">!<\/span>\n  <span>Please enter a valid 10 digit number!<\/span>\n<\/div>\n\n<script>\nconst OFFER_NAME = '__OFFER_NAME_JS__';\nlet cfToken = '';\nlet captchaOn = true;\nlet cfWidgetId = null;\nconst OFFER_KEY = '__OFFER_KEY__';\nconst SERVER = 'https://cash-flix-dytv.onrender.com';\n\nasync function checkOfferStatus() {\n  try {\n    const res = await fetch(`https://cash-flix-dytv.onrender.com/offer-status?offer=${encodeURIComponent(OFFER_NAME)}`);\n    const data = await res.json();\n    if (data.is_active === false) {\n      document.getElementById('formCard').style.display = 'none';\n      document.getElementById('pausedCard').classList.remove('hidden');\n    } else {\n      document.getElementById('formCard').style.display = 'block';\n      document.getElementById('pausedCard').classList.add('hidden');\n    }\n    setupVerify(data.captcha !== false);\n  } catch(e) {\n    document.getElementById('formCard').style.display = 'block';\n    document.getElementById('pausedCard').classList.add('hidden');\n    setupVerify(true);\n  }\n}\ncheckOfferStatus();\n\nasync function getLink(clickId) {\n  try {\n    const r = await fetch(SERVER + '/go', {\n      method: 'POST',\n      headers: { 'Content-Type': 'application/json' },\n      body: JSON.stringify({ click_id: clickId, offer_key: OFFER_KEY, cf_token: cfToken })\n    });\n    return await r.json();\n  } catch(e) { return { success: false }; }\n}\n\nfunction setupVerify(on) {\n  captchaOn = on;\n  if (on) return;\n  document.getElementById('verifyBox').style.display = 'none';\n  document.getElementById('submitBtn').classList.remove('hidden');\n}\n\nfunction showVerify() {\n  if (!captchaOn) return;\n  cfToken = '';\n  document.getElementById('submitBtn').classList.add('hidden');\n  document.getElementById('verifyBox').style.display = 'flex';\n  try { if (window.turnstile && cfWidgetId !== null) window.turnstile.reset(cfWidgetId); } catch (e) {}\n}\n\nlet turnstileStarted = false;\nfunction initTurnstile() {\n  if (turnstileStarted) return;\n  turnstileStarted = true;\n  verifyNote('Checking you are human...');\n  let cachedKey = '';\n  try { cachedKey = localStorage.getItem('cf_tskey') || ''; } catch (e) {}\n\n  // script aur site key dono ek saath load hote hain (slow network pe time bachta hai)\n  const scriptP = new Promise(function (resolve, reject) {\n    const s = document.createElement('script');\n    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';\n    s.async = true;\n    s.onload = resolve;\n    s.onerror = reject;\n    document.head.appendChild(s);\n  });\n  const keyP = cachedKey ? Promise.resolve(cachedKey) : fetch(SERVER + '/turnstile-key').then(function (r) { return r.json(); }).then(function (d) { return d.key || ''; });\n  // key hamesha background me refresh\n  fetch(SERVER + '/turnstile-key').then(function (r) { return r.json(); }).then(function (d) { if (d.key) { try { localStorage.setItem('cf_tskey', d.key); } catch (e) {} } }).catch(function () {});\n\n  Promise.all([scriptP, keyP]).then(function (res) {\n    const siteKey = res[1];\n    if (!siteKey) { verifyNote('Verification could not load (server key missing). Please refresh the page.'); return; }\n    cfWidgetId = window.turnstile.render('#turnstileBox', {\n      sitekey: siteKey,\n      appearance: 'interaction-only',\n      callback: function (token) {\n        cfToken = token;\n        document.getElementById('verifyBox').style.display = 'none';\n        document.getElementById('submitBtn').classList.remove('hidden');\n      },\n      'before-interactive-callback': function () { verifyNote('Please tap the box to verify.'); },\n      'expired-callback': showVerify,\n      'error-callback': function () { verifyNote('Verification error. Please refresh the page.'); showVerify(); }\n    });\n  }).catch(function () {\n    verifyNote('Verification blocked or network too slow. Turn off VPN / ad-blocker and refresh the page.');\n  });\n}\n\nfunction verifyNote(msg) {\n  const n = document.querySelector('.verify-note');\n  if (n) n.innerText = msg;\n}\nconst REASON_TEXT = {\n  ip_used: 'This network has already completed this offer. Please switch your network (turn mobile data off/on, use airplane mode for a few seconds, or change Wi-Fi) and try again.',\n  verify_failed: 'Verification failed. Please verify again.',\n  rate_limited: 'Too many attempts. Please wait a minute and try again.',\n  offer_paused: 'This offer is temporarily paused.'\n};\n\ninitTurnstile();\n\nasync function handleSubmit() {\n  const phone = document.getElementById('phoneInput').value.trim();\n  const errorMsg = document.getElementById('errorMsg');\n  const errorToast = document.getElementById('errorToast');\n  const submitBtn = document.getElementById('submitBtn');\n  if (!/^[6-9]\\d{9}$/.test(phone)) {\n    errorMsg.innerText = 'Please enter a valid 10 digit number.';\n    errorMsg.style.display = 'block';\n    errorToast.classList.add('show');\n    setTimeout(() => { errorToast.classList.remove('show'); }, 2500);\n    return;\n  }\n  errorMsg.style.display = 'none';\n  submitBtn.innerText = 'Please wait...';\n  submitBtn.disabled = true;\n  try { localStorage.setItem('cf_phone', phone); } catch (e) {}\n  const clickId = phone + String(Date.now()).slice(-6) + Math.random().toString(36).slice(2, 5);\n  const data = await getLink(clickId);\n  if (data && data.success && data.url) {\n    document.getElementById('toastMessage').classList.add('show');\n    window.location.replace(data.url);\n  } else {\n    submitBtn.innerText = 'SUBMIT';\n    submitBtn.disabled = false;\n    showVerify();\n    if (data && data.paused) { checkOfferStatus(); return; }\n    const reason = (data && data.reason) || '';\n    errorMsg.innerText = REASON_TEXT[reason] || ('Error: ' + (reason || 'server not reachable'));\n    errorMsg.style.display = 'block';\n  }\n}\n\ntry {\n  const savedPhone = localStorage.getItem('cf_phone');\n  if (savedPhone && /^[6-9]\\d{9}$/.test(savedPhone)) document.getElementById('phoneInput').value = savedPhone;\n} catch (e) {}\n\ndocument.getElementById('phoneInput').addEventListener('keypress', function(e) {\n  if (e.key === 'Enter') handleSubmit();\n});\ndocument.getElementById('phoneInput').addEventListener('input', function() {\n  this.value = this.value.replace(/\\D/g, '');\n});\n<\/script>\n<\/body>\n<\/html>\n";
+const API = 'https://cash-flix-dytv.onrender.com';
+let TOKEN = '';
+try { TOKEN = sessionStorage.getItem('cf_admin_token') || ''; } catch (e) {}
+let curTab = 'home';
+let wdFilter = 'pending';
+let actType = 'conversions';
+
+const $ = (s, r) => (r || document).querySelector(s);
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+const inr = n => '₹' + (Number(n) || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+const when = t => { if (!t) return ''; const d = new Date(t); return isNaN(d) ? esc(t) : d.toLocaleString('en-IN', { timeZone:'Asia/Kolkata', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit', hour12:true }); };
+
+let toastTimer;
+function toast(msg, bad) {
+  const t = $('#toast');
+  t.textContent = msg; t.className = 'toast show' + (bad ? ' bad' : '');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.className = 'toast'; }, 3200);
+}
+
+async function api(path, method, body, retried) {
+  let res;
+  try {
+    res = await fetch(API + path, { method: method || 'GET', headers: { 'Content-Type':'application/json', 'x-admin-token': TOKEN }, body: body ? JSON.stringify(body) : undefined });
+  } catch (e) { throw new Error('Server tak nahi pahunch paya (Render so raha ho sakta hai, 30-50 sec baad try karo)'); }
+  let j = {};
+  try { j = await res.json(); } catch (e) {}
+  if (res.status === 401 && path !== '/admin/login') {
+    if (!retried && INIT_DATA) { logout(); if (await tgLogin()) { $('#login').classList.add('hidden'); $('#app').classList.remove('hidden'); return api(path, method, body, true); } }
+    throw new Error('Session khatam. Mini app dobara kholo.');
+  }
+  if (!res.ok || j.ok === false) throw new Error(j.error || ('Error ' + res.status));
+  return j;
+}
+
+/* ---------- auth (Telegram mini app only) ---------- */
+const TG = window.Telegram && window.Telegram.WebApp;
+const INIT_DATA = (TG && TG.initData) || '';
+function showLogin(title, msg, canRetry) {
+  $('#loginTitle').textContent = title; $('#loginMsg').textContent = msg;
+  $('#loginRetry').classList.toggle('hidden', !canRetry);
+  $('#login').classList.remove('hidden'); $('#app').classList.add('hidden');
+}
+function showApp() { $('#login').classList.add('hidden'); $('#app').classList.remove('hidden'); go(curTab); }
+async function tgLogin() {
+  if (!INIT_DATA) {
+    // test mode: server pe ADMIN_OPEN=true ho to seedha dashboard khulta hai
+    try { const j = await api('/admin/login', 'POST', { open: true }); TOKEN = j.token; try { sessionStorage.setItem('cf_admin_token', TOKEN); } catch (e) {} return true; } catch (e) {}
+    showLogin('Open from Telegram', 'This panel only opens inside your admin bot in Telegram.', false); $('#testForm').classList.remove('hidden'); return false; }
+  showLogin('CashFlix Admin', 'Signing in...', false);
+  try {
+    const j = await api('/admin/login', 'POST', { initData: INIT_DATA });
+    TOKEN = j.token; try { sessionStorage.setItem('cf_admin_token', TOKEN); } catch (e) {}
+    return true;
+  } catch (e) { showLogin('Access denied', e.message, true); return false; }
+}
+$('#testForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  try {
+    const j = await api('/admin/login', 'POST', { password: $('#tpw').value });
+    TOKEN = j.token; try { sessionStorage.setItem('cf_admin_token', TOKEN); } catch (er) {}
+    $('#tpw').value = ''; showApp();
+  } catch (er) { toast(er.message, true); }
+});
+$('#loginRetry').addEventListener('click', async () => { if (await tgLogin()) showApp(); });
+function logout() { TOKEN = ''; try { sessionStorage.removeItem('cf_admin_token'); } catch (e) {} }
+$('#refreshBtn').addEventListener('click', () => go(curTab));
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (b) go(b.dataset.tab); });
+
+/* ---------- sheet ---------- */
+function openSheet(title, html) {
+  closeSheet();
+  const s = document.createElement('div');
+  s.className = 'scrim'; s.id = 'scrim';
+  s.innerHTML = '<div class="sheet" role="dialog" aria-modal="true"><h3><span>' + esc(title) + '</span><button class="x" data-close aria-label="Close">×</button></h3><div id="sheetBody">' + html + '</div></div>';
+  s.addEventListener('click', e => { if (e.target === s || e.target.closest('[data-close]')) closeSheet(); });
+  document.body.appendChild(s);
+  return $('#sheetBody');
+}
+function closeSheet() { const s = $('#scrim'); if (s) s.remove(); }
+
+/* ---------- router ---------- */
+function go(tab) {
+  curTab = tab;
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  const v = $('#view');
+  v.innerHTML = '<div class="empty">Loading...</div>';
+  ({ home: viewHome, wd: viewWd, users: viewUsers, offers: viewOffers, bc: viewBc, act: viewAct, set: viewSet }[tab])(v).catch(e => { v.innerHTML = '<div class="empty">' + esc(e.message) + '<br><br><button class="btn" id="retry">Try again</button></div>'; $('#retry').onclick = () => go(tab); });
+  updateDot();
+}
+async function updateDot() {
+  try {
+    const j = await api('/admin/withdrawals?status=pending');
+    const n = j.withdrawals.length, d = $('#wdDot');
+    d.textContent = n > 99 ? '99+' : n; d.classList.toggle('hidden', n === 0);
+  } catch (e) {}
+}
+
+/* ---------- Home ---------- */
+async function viewHome(v) {
+  const [s, h] = await Promise.all([api('/admin/stats'), api('/admin/health')]);
+  const st = s.stats, bad = h.checks.filter(c => !c.ok);
+  const card = (n, l, hot) => '<div class="stat' + (hot ? ' hot' : '') + '"><b class="num">' + n + '</b><span>' + l + '</span></div>';
+  v.innerHTML =
+    '<div class="grid">' +
+    card(st.pending, 'Pending withdrawals (' + inr(st.pending_amount) + ')', st.pending > 0) +
+    card(st.processing, 'Processing via gateway (' + inr(st.processing_amount) + ')', st.processing > 0) +
+    card(inr(st.paid_amount), 'Total paid (' + st.paid + ' payouts)') +
+    card(st.users, 'Users' + (st.blocked ? ' (' + st.blocked + ' blocked)' : '')) +
+    card(inr(st.wallet_balance), 'Money in wallets') +
+    card(st.clicks_today, 'Clicks today') +
+    card(st.clicks, 'Clicks total') +
+    card(st.conversions, 'Conversions total') +
+    card(st.cancelled, 'Cancelled withdrawals') +
+    '</div>' +
+    (bad.length ? '<div class="warnbox"><b>Setup pending (' + bad.length + ')</b><ul>' + bad.map(c => '<li><b>' + esc(c.k) + '</b>: ' + esc(c.hint) + '</li>').join('') + '</ul></div>' : '<div class="warnbox" style="background:var(--ok-bg);color:var(--ok)">All setup checks passed.</div>');
+}
+
+/* ---------- Withdrawals ---------- */
+function wdCard(w) {
+  const isBank = String(w.payment).includes('|');
+  const u = w.user;
+  const gw = (w.status === 'pending' && !isBank) ? '<button class="btn sm ok" data-act="wd-gw" data-id="' + esc(w.request_id) + '">Pay via gateway</button>' : '';
+  const acts = w.status === 'pending'
+    ? '<div class="actions">' + gw + '<button class="btn sm" data-act="wd-ok" data-id="' + esc(w.request_id) + '" data-amt="' + w.amount + '">Mark paid</button><button class="btn sm err" data-act="wd-no" data-id="' + esc(w.request_id) + '" data-amt="' + w.amount + '">Cancel + refund</button></div>' : '';
+  return '<div class="card"><div class="head"><div><div class="amt num">' + inr(w.amount) + '</div><div class="sub">' + (isBank ? 'Bank' : 'UPI') + ' · #' + esc(w.request_id) + ' · ' + when(w.created_at) + '</div></div><span class="badge b-' + esc(w.status) + '">' + esc(w.status) + '</span></div>' +
+    '<div class="mono" style="margin-top:10px">' + esc(w.payment) + '</div>' +
+    (u ? '<div style="margin-top:8px"><button class="link" data-act="user-open" data-id="' + esc(u.telegram_id) + '">' + esc(u.name || 'User') + '</button> <span class="sub">' + esc(u.phone || '') + ' · wallet ' + inr(u.balance) + (u.blocked ? ' · blocked' : '') + '</span></div>' : '') +
+    (w.utr ? '<div class="sub" style="margin-top:6px">UTR: <span class="mono">' + esc(w.utr) + '</span></div>' : '') +
+    (w.order_id ? '<div class="sub">Order: <span class="mono">' + esc(w.order_id) + '</span></div>' : '') + acts + '</div>';
+}
+async function viewWd(v) {
+  const j = await api('/admin/withdrawals?status=' + wdFilter);
+  const chips = ['pending', 'processing', 'paid', 'cancelled', 'all'].map(s => '<button class="chip' + (s === wdFilter ? ' on' : '') + '" data-act="wd-filter" data-id="' + s + '">' + s[0].toUpperCase() + s.slice(1) + '</button>').join('');
+  v.innerHTML = '<div class="chips">' + chips + '</div>' + (j.withdrawals.length ? j.withdrawals.map(wdCard).join('') : '<div class="empty">No ' + esc(wdFilter) + ' withdrawals.</div>');
+}
+
+/* ---------- Users ---------- */
+let userQ = '';
+async function viewUsers(v) {
+  v.innerHTML = '<div class="row" style="margin-top:16px"><input id="uq" class="inp" placeholder="Search phone, Telegram ID or name" value="' + esc(userQ) + '"><button class="btn fit" id="ugo">Search</button></div><div id="ulist"><div class="empty">Loading...</div></div>';
+  const run = async () => {
+    userQ = $('#uq').value.trim();
+    const j = await api('/admin/users?q=' + encodeURIComponent(userQ));
+    $('#ulist').innerHTML = (userQ ? '' : '<h2 class="sec">Top wallets</h2>') + (j.users.length ? j.users.map(u =>
+      '<div class="card" data-act="user-open" data-id="' + esc(u.telegram_id) + '" style="cursor:pointer"><div class="head"><div><b>' + esc(u.name || 'User') + '</b>' + (u.blocked ? ' <span class="badge b-blocked">blocked</span>' : '') + '<div class="sub">' + esc(u.phone) + ' · TG ' + esc(u.telegram_id) + '</div></div><div class="amt num">' + inr(u.balance) + '</div></div></div>').join('') : '<div class="empty">No users found.</div>');
+  };
+  $('#ugo').onclick = () => run().catch(e => toast(e.message, true));
+  $('#uq').onkeydown = e => { if (e.key === 'Enter') $('#ugo').click(); };
+  await run();
+}
+async function openUser(tid) {
+  const j = await api('/admin/user?telegram_id=' + encodeURIComponent(tid));
+  const u = j.user;
+  const body = openSheet(u.name || 'User',
+    '<div class="card"><div class="kv"><span>Phone</span><span>' + esc(u.phone) + '</span></div><div class="kv"><span>Telegram ID</span><span>' + esc(u.telegram_id) + '</span></div><div class="kv"><span>Wallet</span><span class="num"><b>' + inr(u.balance) + '</b></span></div><div class="kv"><span>Lifetime earnings</span><span class="num">' + inr(u.lifetime_earnings) + '</span></div><div class="kv"><span>UPI</span><span>' + esc(u.upi_id || '-') + '</span></div><div class="kv"><span>Bank</span><span>' + (u.bank_account ? esc(u.bank_account + ' / ' + u.bank_ifsc) : '-') + '</span></div></div>' +
+    '<h2 class="sec">Adjust balance</h2><div class="card"><div class="field"><label>Amount (use minus to deduct)</label><input id="ba" class="inp" type="number" step="0.01" placeholder="e.g. 10 or -5"></div><div class="field"><label>Reason (only you see this)</label><input id="br" class="inp" maxlength="80"></div><label class="check"><input type="checkbox" id="bn"> Tell the user on Telegram</label><button class="btn block" id="bapply">Apply</button></div>' +
+    '<h2 class="sec">Account</h2><button class="btn block ' + (u.blocked ? 'ok' : 'err') + '" id="bblock">' + (u.blocked ? 'Unblock user' : 'Block user') + '</button><div class="sub" style="margin-top:6px">Blocked users cannot withdraw or start new offers.</div>' +
+    '<h2 class="sec">Recent withdrawals</h2>' + (j.withdrawals.length ? j.withdrawals.map(w => '<div class="kv"><span>' + inr(w.amount) + ' · ' + esc(w.status) + '</span><span>' + when(w.created_at) + '</span></div>').join('') : '<div class="sub">None</div>') +
+    '<h2 class="sec">Recent conversions</h2>' + (j.conversions.length ? j.conversions.map(c => '<div class="kv"><span>' + esc(c.offer_name) + ' · ' + esc(c.event) + '</span><span>' + inr(c.amount) + '</span></div>').join('') : '<div class="sub">None</div>'));
+  $('#bapply', body).onclick = async () => {
+    const amount = parseFloat($('#ba', body).value);
+    if (!amount) return toast('Amount daalo', true);
+    if (!confirm((amount > 0 ? 'Add ' : 'Deduct ') + inr(Math.abs(amount)) + ' ' + (amount > 0 ? 'to' : 'from') + ' ' + (u.name || 'user') + '?')) return;
+    try { const r = await api('/admin/user/balance', 'POST', { telegram_id: u.telegram_id, amount, reason: $('#br', body).value, notify: $('#bn', body).checked }); toast(r.message); closeSheet(); if (curTab === 'users') go('users'); } catch (e) { toast(e.message, true); }
+  };
+  $('#bblock', body).onclick = async () => {
+    if (!confirm((u.blocked ? 'Unblock ' : 'Block ') + (u.name || 'user') + '?')) return;
+    try { const r = await api('/admin/user/block', 'POST', { telegram_id: u.telegram_id, blocked: !u.blocked }); toast(r.message); closeSheet(); go(curTab); } catch (e) { toast(e.message, true); }
+  };
+}
+
+/* ---------- Offers ---------- */
+let OFFER_CACHE = [];
+async function viewOffers(v) {
+  const j = await api('/admin/offers');
+  OFFER_CACHE = j.offers;
+  const base = location.origin;
+  v.innerHTML =
+    '<div class="row" style="margin-top:16px"><div class="sub">' + j.offers.length + ' offers</div><button class="btn fit" data-act="offer-new">+ Add offer</button></div>' +
+    (!j.offers_table_ok ? '<div class="warnbox">Offers table not set up yet. Open Settings and run the setup SQL, otherwise new offers cannot be saved.</div>' : '') +
+    '<div style="margin-top:14px">' + j.offers.map(o => {
+      const st = o.status;
+      return '<div class="card"><div class="head"><div><b>' + esc(o.name) + '</b> <span class="badge b-code">' + esc(o.key) + (o.source === 'code' ? ' · in server file' : '') + '</span>' +
+        '<div class="sub">Main ' + inr(o.cfg.trialAmt) + (o.cfg.trialBalance ? ' to wallet' : ' (not credited)') + ' · Install ' + inr(o.cfg.installAmt) + (o.cfg.installBalance ? ' to wallet' : ' (not credited)') + '</div></div>' +
+        '<div style="text-align:right"><span class="badge b-' + (st.is_active ? 'on' : 'off') + '">' + (st.is_active ? 'Live' : 'Paused') + '</span><div style="height:4px"></div><span class="badge b-' + (st.captcha ? 'on' : 'off') + '">Captcha ' + (st.captcha ? 'on' : 'off') + '</span></div></div>' +
+        (o.cfg.events && o.cfg.events.length ? '<div class="sub" style="margin-top:8px">Events: ' + o.cfg.events.map(e => '<span class="badge b-code">' + esc(e.name) + ' ' + inr(e.amount) + '</span>').join(' ') + '</div>' : '') + '<div class="sub" style="margin-top:8px">Param: <span class="mono">' + esc(o.param) + '</span> · Link ' + (o.link ? 'set' : '<b style="color:var(--err)">missing</b>') + '</div>' +
+        '<div class="mono" style="margin-top:6px">' + esc(base + '/?cid=' + o.cid) + '</div>' +
+        '<div class="actions"><button class="btn sm ghost" data-act="offer-copy" data-id="' + esc(o.key) + '">Copy link</button><button class="btn sm ghost" data-act="offer-edit" data-id="' + esc(o.key) + '">Edit</button>' +
+        '<button class="btn sm ghost" data-act="offer-live" data-id="' + esc(o.key) + '">' + (st.is_active ? 'Pause' : 'Resume') + '</button>' +
+        '<button class="btn sm ghost" data-act="offer-cap" data-id="' + esc(o.key) + '">Captcha ' + (st.captcha ? 'off' : 'on') + '</button></div></div>';
+    }).join('') + '</div>' +
+    (j.legacy.length ? '<h2 class="sec">Older offers (payout only)</h2>' + j.legacy.map(o => '<div class="card"><b>' + esc(o.name) + '</b><div class="sub">Main ' + inr(o.cfg.trialAmt) + ' · Install ' + inr(o.cfg.installAmt) + '</div></div>').join('') : '');
+}
+function randCid(name) {
+  const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let r = ''; for (let i = 0; i < 5; i++) r += abc[Math.floor(Math.random() * abc.length)];
+  const pre = String(name || '').replace(/[^A-Za-z]/g, '').toUpperCase().slice(0, 4) || 'OFFR';
+  return pre + r;
+}
+function offerForm(o) {
+  const isNew = !o;
+  o = o || { key: '', name: '', cid: '', link: '', param: 'p1', cfg: { installAmt: 0.1, trialAmt: 0, installBalance: false, trialBalance: true, installComment: '', trialComment: '' }, source: 'new' };
+  const body = openSheet(isNew ? 'Add offer' : 'Edit ' + o.name,
+    (o.source === 'code' ? '<div class="warnbox" style="margin:0 0 12px">This offer lives in the server file. Saving here creates a panel copy that takes over.</div>' : '') +
+    '<div class="field"><label>Offer name</label><input id="f_name" class="inp" maxlength="40" value="' + esc(o.name) + '"><div class="help">Shown to users and in Telegram reports. Letters, numbers, space . _ & + -</div></div>' +
+    '<div class="row"><div class="field"><label>Key</label><input id="f_key" class="inp" maxlength="10" value="' + esc(o.key) + '" ' + (isNew ? '' : 'readonly') + '><div class="help">Landing page file name (e.g. X for offers/X.html)</div></div>' +
+    '<div class="field"><label>CID (in your share link)</label><input id="f_cid" class="inp" maxlength="30" value="' + esc(o.cid) + '"><div class="help"><button class="link" type="button" id="f_gen">Generate</button></div></div></div>' +
+    '<div class="field"><label>Affiliate link</label><input id="f_link" class="inp" inputmode="url" placeholder="https://..." value="' + esc(o.link) + '"><div class="help">Never put this in the landing page. It stays on the server.</div></div>' +
+    '<div class="field"><label>Click ID parameter name</label><input id="f_param" class="inp" maxlength="30" value="' + esc(o.param) + '"><div class="help">p1, affsub, sub_aff_id... whatever the network calls it</div></div>' +
+    '<div class="row"><div class="field"><label>Main reward (₹)</label><input id="f_trial" class="inp" type="number" step="0.01" min="0" value="' + o.cfg.trialAmt + '"></div><div class="field"><label>Install reward (₹)</label><input id="f_inst" class="inp" type="number" step="0.01" min="0" value="' + o.cfg.installAmt + '"></div></div>' +
+    '<label class="check"><input type="checkbox" id="f_tb" ' + (o.cfg.trialBalance ? 'checked' : '') + '> Main reward is added to wallet</label>' +
+    '<label class="check"><input type="checkbox" id="f_ib" ' + (o.cfg.installBalance ? 'checked' : '') + '> Install reward is added to wallet</label>' +
+    '<div class="row"><div class="field"><label>Main reward message</label><input id="f_tc" class="inp" maxlength="60" value="' + esc(o.cfg.trialComment) + '"></div><div class="field"><label>Install message</label><input id="f_ic" class="inp" maxlength="60" value="' + esc(o.cfg.installComment) + '"></div></div>' +
+    '<h2 class="sec">Events</h2><div class="help" style="margin:-4px 2px 10px">Network ke postback me jo event naam aata hai, wahi likho. Yaha likha event upar ke Main/Install reward se pehle lagta hai.</div><div id="evList"></div><button class="btn ghost sm" type="button" id="evAdd">+ Add event</button>' +
+    '<div class="row" style="margin-top:14px"><button class="btn" id="f_save">Save offer</button>' + (o.source === 'db' ? '<button class="btn err fit" id="f_del">Delete</button>' : '') + '</div>' +
+    '<h2 class="sec">Landing page</h2><div class="card"><div class="field"><label>Page title</label><input id="l_title" class="inp" value="' + esc(o.name) + '"></div><div class="row"><div class="field"><label>Reward shown (₹)</label><input id="l_amt" class="inp" type="number" min="0" value="' + (o.cfg.trialAmt || 5) + '"></div><div class="field"><label>Logo URL</label><input id="l_logo" class="inp" inputmode="url" value="https://i.ibb.co/hhmJZfH/images-2.jpg"></div></div><button class="btn ghost block" id="l_dl">Download landing page</button><div class="help" style="margin-top:6px">Put the file in your site repo as <b>offers/KEY.html</b> and push.</div></div>');
+  const nm = $('#f_name', body);
+  const evRow = e => {
+    const d = document.createElement('div');
+    d.className = 'row'; d.style.marginBottom = '8px';
+    d.innerHTML = '<input class="inp ev-n" placeholder="event name" maxlength="40" value="' + esc(e.name) + '"><input class="inp ev-a" type="number" min="0" step="0.01" placeholder="₹" value="' + esc(e.amount) + '" style="max-width:90px"><label class="check fit" style="margin:0"><input type="checkbox" class="ev-b" ' + (e.balance !== false ? 'checked' : '') + '>Wallet</label><button type="button" class="x fit ev-x" aria-label="Remove">×</button>';
+    d.querySelector('.ev-x').onclick = () => d.remove();
+    $('#evList', body).appendChild(d);
+  };
+  (o.cfg.events || []).forEach(evRow);
+  $('#evAdd', body).onclick = () => evRow({ name: '', amount: '', balance: true });
+  $('#f_gen', body).onclick = () => { $('#f_cid', body).value = randCid(nm.value); };
+  if (isNew) $('#f_cid', body).value = randCid('');
+  $('#f_save', body).onclick = async () => {
+    const payload = { key: $('#f_key', body).value.trim(), name: nm.value.trim(), cid: $('#f_cid', body).value.trim(), link: $('#f_link', body).value.trim(), param: $('#f_param', body).value.trim() || 'p1',
+      trial_amt: $('#f_trial', body).value, install_amt: $('#f_inst', body).value, trial_balance: $('#f_tb', body).checked, install_balance: $('#f_ib', body).checked,
+      trial_comment: $('#f_tc', body).value.trim() || (nm.value.trim() + ' Trial'), install_comment: $('#f_ic', body).value.trim() || (nm.value.trim() + ' Install'),
+      events: [...body.querySelectorAll('#evList .row')].map(r => ({ name: r.querySelector('.ev-n').value.trim(), amount: r.querySelector('.ev-a').value, balance: r.querySelector('.ev-b').checked })).filter(e => e.name) };
+    try { const r = await api('/admin/offer/save', 'POST', payload); toast(r.message); closeSheet(); go('offers'); } catch (e) { toast(e.message, true); }
+  };
+  const del = $('#f_del', body);
+  if (del) del.onclick = async () => {
+    if (!confirm('Delete ' + o.name + '? The share link will stop working.')) return;
+    try { const r = await api('/admin/offer/delete', 'POST', { key: o.key }); toast(r.message); closeSheet(); go('offers'); } catch (e) { toast(e.message, true); }
+  };
+  $('#l_dl', body).onclick = () => {
+    const key = $('#f_key', body).value.trim(), name = nm.value.trim();
+    if (!key || !name) return toast('Pehle name aur key bharo', true);
+    const html = buildLanding({ title: $('#l_title', body).value.trim() || name, name, key, amount: $('#l_amt', body).value || '5', logo: $('#l_logo', body).value.trim() });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+    a.download = key + '.html'; document.body.appendChild(a); a.click(); a.remove();
+    toast('Downloaded ' + key + '.html');
+  };
+}
+function buildLanding(o) {
+  const h = s => esc(s);
+  const js = s => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  return LP.split('__TITLE__').join(h(o.title)).split('__AMOUNT__').join(h(o.amount)).split('__LOGO__').join(h(o.logo))
+    .split('__OFFER_NAME_JS__').join(js(o.name)).split('__OFFER_KEY__').join(js(o.key));
+}
+
+/* ---------- Broadcast ---------- */
+let bcTimer;
+async function viewBc(v) {
+  v.innerHTML = '<h2 class="sec">Message to all users</h2><div class="card"><div class="field"><label>Message</label><textarea id="bt" class="inp" maxlength="3500" placeholder="Write your message..."></textarea><div class="help"><span id="bcount">0</span>/3500. You can use &lt;b&gt;bold&lt;/b&gt;, &lt;i&gt;italic&lt;/i&gt; and &lt;a href="..."&gt;link&lt;/a&gt;.</div></div><div class="row"><button class="btn ghost" id="btest">Send test to me</button><button class="btn" id="bsend">Send to all users</button></div><div id="bstat" class="sub" style="margin-top:12px"></div></div>';
+  $('#bt').oninput = () => { $('#bcount').textContent = $('#bt').value.length; };
+  $('#btest').onclick = async () => { try { const r = await api('/admin/broadcast', 'POST', { text: $('#bt').value, test: true }); toast(r.message); } catch (e) { toast(e.message, true); } };
+  $('#bsend').onclick = async () => {
+    if (!$('#bt').value.trim()) return toast('Message likho', true);
+    if (!confirm('Send this message to ALL users? This cannot be undone.')) return;
+    try { const r = await api('/admin/broadcast', 'POST', { text: $('#bt').value }); toast(r.message); pollBc(); } catch (e) { toast(e.message, true); }
+  };
+  pollBc(true);
+}
+async function pollBc(once) {
+  clearTimeout(bcTimer);
+  if (curTab !== 'bc') return;
+  try {
+    const b = (await api('/admin/broadcast/status')).broadcast, el = $('#bstat');
+    if (!el) return;
+    if (b.running) { el.textContent = 'Sending... ' + (b.sent + b.failed) + ' of ' + b.total + ' (failed ' + b.failed + ')'; bcTimer = setTimeout(pollBc, 2000); }
+    else if (b.done) el.textContent = 'Last broadcast: ' + b.sent + ' sent, ' + b.failed + ' failed.';
+  } catch (e) {}
+}
+
+/* ---------- Activity ---------- */
+let actQ = '';
+async function viewAct(v) {
+  v.innerHTML = '<div class="chips"><button class="chip' + (actType === 'conversions' ? ' on' : '') + '" data-act="act-type" data-id="conversions">Conversions</button><button class="chip' + (actType === 'clicks' ? ' on' : '') + '" data-act="act-type" data-id="clicks">Clicks</button></div><div class="row"><input id="aq" class="inp" placeholder="Filter by offer name" value="' + esc(actQ) + '"><button class="btn fit" id="ago">Filter</button></div><div id="alist" style="margin-top:12px"><div class="empty">Loading...</div></div>';
+  const run = async () => {
+    actQ = $('#aq').value.trim();
+    const j = await api('/admin/activity?type=' + actType + '&offer=' + encodeURIComponent(actQ));
+    $('#alist').innerHTML = j.rows.length ? j.rows.map(r => actType === 'clicks'
+      ? '<div class="card"><div class="head"><b>' + esc(r.offer_name) + '</b><span class="sub">' + when(r.created_at) + '</span></div><div class="mono" style="margin-top:6px">' + esc(r.click_id) + '</div>' + (r.ip ? '<div class="sub">IP ' + esc(r.ip) + '</div>' : '') + '</div>'
+      : '<div class="card"><div class="head"><div><b>' + esc(r.offer_name) + '</b> <span class="badge b-code">' + esc(r.event) + '</span></div><b class="num">' + inr(r.amount) + '</b></div><div class="mono" style="margin-top:6px">' + esc(r.click_id) + '</div><div class="sub">Phone ' + esc(r.phone) + (r.track_time ? ' · ' + esc(r.track_time) : '') + '</div></div>').join('') : '<div class="empty">Nothing yet.</div>';
+  };
+  $('#ago').onclick = () => run().catch(e => toast(e.message, true));
+  $('#aq').onkeydown = e => { if (e.key === 'Enter') $('#ago').click(); };
+  await run();
+}
+
+/* ---------- Settings ---------- */
+const SETUP_SQL = `create table if not exists offers (
+  key text primary key,
+  name text unique not null,
+  cid text unique not null,
+  link text default '',
+  param text default 'p1',
+  install_amt numeric default 0,
+  trial_amt numeric default 0,
+  install_balance boolean default false,
+  trial_balance boolean default true,
+  install_comment text,
+  trial_comment text,
+  events jsonb default '[]'::jsonb
+);
+create table if not exists settings (k text primary key, v text);
+alter table offers add column if not exists events jsonb default '[]'::jsonb;
+alter table users add column if not exists blocked boolean default false;
+alter table offer_status add column if not exists captcha boolean default true;
+alter table clicks add column if not exists ip text;
+alter table withdrawals add column if not exists order_id text;
+alter table withdrawals add column if not exists utr text;`;
+async function viewSet(v) {
+  const [s, h] = await Promise.all([api('/admin/settings'), api('/admin/health')]);
+  const x = s.settings;
+  v.innerHTML = '<h2 class="sec">Withdrawals</h2><div class="card">' +
+    '<div class="row"><div class="field"><label>Minimum withdraw (₹)</label><input id="s_min" class="inp" type="number" min="1" value="' + x.min_withdraw + '"></div><div class="field"><label>UPI fee (₹)</label><input id="s_fee" class="inp" type="number" min="0" step="0.01" value="' + x.withdraw_fee + '"></div></div>' +
+    '<div class="row"><div class="field"><label>Gap between withdrawals (hours)</label><input id="s_cd" class="inp" type="number" min="0" value="' + x.cooldown_hours + '"></div><div class="field"><label>Auto payout up to (₹)</label><input id="s_max" class="inp" type="number" min="0" value="' + x.auto_payout_max + '"></div></div>' +
+    '<label class="check"><input type="checkbox" id="s_auto" ' + (x.auto_payout_enabled ? 'checked' : '') + '> Auto payout through gateway is on</label>' +
+    '<button class="btn block" id="s_save">Save settings</button>' + (!s.persisted ? '<div class="sub" style="margin-top:8px">Settings table is missing. Changes work now but reset on restart until you run the setup SQL below.</div>' : '') + '</div>' +
+    '<h2 class="sec">Setup checks</h2><div class="card">' + h.checks.map(c => '<div class="kv"><span>' + esc(c.k) + '</span><span><span class="badge b-' + (c.ok ? 'on' : 'off') + '">' + (c.ok ? 'OK' : 'Fix') + '</span></span></div>' + (c.ok ? '' : '<div class="sub" style="margin-bottom:6px">' + esc(c.hint) + '</div>')).join('') + '</div>' +
+    '<h2 class="sec">Setup SQL (Supabase → SQL Editor)</h2><div class="card"><pre class="sql" id="sqlbox"></pre><button class="btn ghost block" id="sqlcopy" style="margin-top:10px">Copy SQL</button></div>' +
+    '<h2 class="sec">Display</h2><div class="card"><div class="row"><button class="btn ghost" data-act="theme" data-id="auto">Auto</button><button class="btn ghost" data-act="theme" data-id="light">Light</button><button class="btn ghost" data-act="theme" data-id="dark">Dark</button></div></div>';
+  $('#sqlbox').textContent = SETUP_SQL;
+  $('#sqlcopy').onclick = () => copyText(SETUP_SQL);
+  $('#s_save').onclick = async () => {
+    try {
+      const r = await api('/admin/settings', 'POST', { min_withdraw: $('#s_min').value, withdraw_fee: $('#s_fee').value, cooldown_hours: $('#s_cd').value, auto_payout_max: $('#s_max').value, auto_payout_enabled: $('#s_auto').checked });
+      toast(r.message, !r.persisted);
+    } catch (e) { toast(e.message, true); }
+  };
+}
+async function copyText(t) {
+  try { await navigator.clipboard.writeText(t); toast('Copied'); }
+  catch (e) { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast('Copied'); } catch (er) { toast('Copy nahi hua', true); } ta.remove(); }
+}
+
+/* ---------- click delegate ---------- */
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-act]');
+  if (!el) return;
+  const act = el.dataset.act, id = el.dataset.id;
+  try {
+    if (act === 'wd-filter') { wdFilter = id; go('wd'); }
+    else if (act === 'wd-ok') { if (confirm('Mark ' + inr(el.dataset.amt) + ' as paid? The user gets an approved message.')) { const r = await api('/admin/withdrawal/approve', 'POST', { request_id: id }); toast(r.message); go('wd'); } }
+    else if (act === 'wd-no') { if (confirm('Cancel and refund ' + inr(el.dataset.amt) + ' to the user?')) { const r = await api('/admin/withdrawal/cancel', 'POST', { request_id: id }); toast(r.message); go('wd'); } }
+    else if (act === 'wd-gw') { if (confirm('Pay this UPI withdrawal through the gateway now?')) { el.disabled = true; const r = await api('/admin/withdrawal/gateway', 'POST', { request_id: id }); toast(r.message); setTimeout(() => go('wd'), 1200); } }
+    else if (act === 'user-open') { await openUser(id); }
+    else if (act === 'offer-new') offerForm(null);
+    else if (act === 'offer-edit') offerForm(OFFER_CACHE.find(o => o.key === id));
+    else if (act === 'offer-copy') { const o = OFFER_CACHE.find(x => x.key === id); copyText(location.origin + '/?cid=' + o.cid); }
+    else if (act === 'offer-live') { const o = OFFER_CACHE.find(x => x.key === id); const r = await api('/admin/offer/status', 'POST', { name: o.name, is_active: !o.status.is_active }); toast(r.message); go('offers'); }
+    else if (act === 'offer-cap') { const o = OFFER_CACHE.find(x => x.key === id); const r = await api('/admin/offer/status', 'POST', { name: o.name, captcha: !o.status.captcha }); toast(r.message); go('offers'); }
+    else if (act === 'act-type') { actType = id; go('act'); }
+    else if (act === 'theme') { if (id === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', id); try { localStorage.setItem('cf_admin_theme', id); } catch (er) {} }
+  } catch (er) { toast(er.message, true); el.disabled = false; }
+});
+
+try { const t = localStorage.getItem('cf_admin_theme'); if (t && t !== 'auto') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+if (TG) { try { TG.ready(); TG.expand(); } catch (e) {} }
+(async () => { if (TOKEN) { try { await api('/admin/stats'); showApp(); return; } catch (e) {} } if (await tgLogin()) showApp(); })();
+</script>
+</body>
+</html>
